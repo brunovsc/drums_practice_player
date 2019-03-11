@@ -17,6 +17,8 @@
 		1E04C939222CDA8000ADC065 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C938222CDA8000ADC065 /* Song.swift */; };
 		1E04C93C222CDB4100ADC065 /* SongsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C93B222CDB4100ADC065 /* SongsRepository.swift */; };
 		1E04C940222CDBE700ADC065 /* UIAlertControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C93F222CDBE700ADC065 /* UIAlertControllerExtensions.swift */; };
+		1E04C942222F200800ADC065 /* PopupPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C941222F200800ADC065 /* PopupPlayerView.swift */; };
+		1E04C944222F209D00ADC065 /* SongTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C943222F209D00ADC065 /* SongTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,8 @@
 		1E04C938222CDA8000ADC065 /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		1E04C93B222CDB4100ADC065 /* SongsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongsRepository.swift; sourceTree = "<group>"; };
 		1E04C93F222CDBE700ADC065 /* UIAlertControllerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertControllerExtensions.swift; sourceTree = "<group>"; };
+		1E04C941222F200800ADC065 /* PopupPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupPlayerView.swift; sourceTree = "<group>"; };
+		1E04C943222F209D00ADC065 /* SongTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,7 +111,7 @@
 				1E04C93A222CDB0800ADC065 /* Repository */,
 				1E04C930222CD47700ADC065 /* App */,
 				1E04C92F222CD46A00ADC065 /* Resource */,
-				1E04C92E222CD46000ADC065 /* ViewController */,
+				1E04C92E222CD46000ADC065 /* Controller */,
 				1E04C92D222CD45B00ADC065 /* View */,
 				1E04C92C222CD45300ADC065 /* Model */,
 			);
@@ -143,16 +147,18 @@
 		1E04C92D222CD45B00ADC065 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1E04C941222F200800ADC065 /* PopupPlayerView.swift */,
+				1E04C943222F209D00ADC065 /* SongTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		1E04C92E222CD46000ADC065 /* ViewController */ = {
+		1E04C92E222CD46000ADC065 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
 				1E04C931222CD54E00ADC065 /* SongListController.swift */,
 			);
-			path = ViewController;
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		1E04C92F222CD46A00ADC065 /* Resource */ = {
@@ -258,6 +264,11 @@
 				TargetAttributes = {
 					1E04C8FA222CD2E800ADC065 = {
 						CreatedOnToolsVersion = 10.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					1E04C90E222CD2EA00ADC065 = {
 						CreatedOnToolsVersion = 10.1;
@@ -320,9 +331,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E04C942222F200800ADC065 /* PopupPlayerView.swift in Sources */,
 				1E04C939222CDA8000ADC065 /* Song.swift in Sources */,
 				1E04C937222CD75200ADC065 /* UIColorExtensions.swift in Sources */,
 				1E04C932222CD54E00ADC065 /* SongListController.swift in Sources */,
+				1E04C944222F209D00ADC065 /* SongTableViewCell.swift in Sources */,
 				1E04C8FF222CD2E800ADC065 /* AppDelegate.swift in Sources */,
 				1E04C940222CDBE700ADC065 /* UIAlertControllerExtensions.swift in Sources */,
 				1E04C93C222CDB4100ADC065 /* SongsRepository.swift in Sources */,
