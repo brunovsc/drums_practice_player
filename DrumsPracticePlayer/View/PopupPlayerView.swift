@@ -13,15 +13,20 @@ protocol PopupPlayerViewDelegate {
     func stopButtonDidReceiveTouchUpInside()
     func previousSongButtonDidReceiveTouchUpInside()
     func nextSongButtonDidReceiveTouchUpInside()
+    func expandToFullPlayer()
+    func reduceToSmallPlayer()
     //    func previousCheckpointButtonDidReceiveTouchUpInside()
     //    func nextCheckpointButtonDidReceiveTouchUpInside()
 }
 
 class PopupPlayerView: UIView {
     
-    static let height: CGFloat = 140
+    static let minHeight: CGFloat = 140
+    static let maxHeight: CGFloat = 500
     static let buttonSize: CGFloat = 40
     
+    var isExpanded = false
+    weak var containerViewTopConstraint: NSLayoutConstraint?
     var delegate: PopupPlayerViewDelegate?
     
     lazy var containerView: UIView = {
@@ -99,6 +104,14 @@ class PopupPlayerView: UIView {
         return buttonsStackView
     }()
     
+    lazy var closePlayerButton: UIButton = {
+        let close = UIButton()
+        close.setTitle("close", for: .normal)
+        close.translatesAutoresizingMaskIntoConstraints = false
+        close.addTarget(self, action: #selector(closePlayerButtonDidReceiveTouchUpInside), for: .touchUpInside)
+        return close
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -118,10 +131,25 @@ class PopupPlayerView: UIView {
         containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
         containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
         containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
-        containerView.topAnchor.constraint(equalTo: topAnchor, constant: -10).isActive = true
-        containerView.heightAnchor.constraint(equalToConstant: PopupPlayerView.height - 20).isActive = true
+        containerViewTopConstraint = containerView.topAnchor.constraint(equalTo: topAnchor, constant: -10)
+        containerViewTopConstraint?.isActive = true
+        containerView.heightAnchor.constraint(greaterThanOrEqualToConstant: PopupPlayerView.minHeight).isActive = true
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handlePopupPlayerTapGesture(recognizer:)))
+        containerView.addGestureRecognizer(tapGestureRecognizer)
         setupTitleLabel()
         setupButtonsContainerView()
+    }
+    
+    @objc func handlePopupPlayerTapGesture(recognizer: UITapGestureRecognizer) {
+        if isExpanded {
+            containerViewTopConstraint?.constant = -10
+            delegate?.reduceToSmallPlayer()
+            isExpanded = false
+        } else {
+            containerViewTopConstraint?.constant = 10
+            delegate?.expandToFullPlayer()
+            isExpanded = true
+        }
     }
     
     func setupTitleLabel() {
@@ -135,7 +163,7 @@ class PopupPlayerView: UIView {
         containerView.addSubview(buttonsStackView)
         buttonsStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20).isActive = true
         buttonsStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
-        buttonsStackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10).isActive = true
+        buttonsStackView.topAnchor.constraint(greaterThanOrEqualTo: titleLabel.bottomAnchor, constant: 10).isActive = true
         buttonsStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20).isActive = true
     }
     
@@ -144,6 +172,10 @@ class PopupPlayerView: UIView {
     }
     
     @objc func stopButtonDidReceiveTouchUpInside() {
+        if isExpanded {
+            containerViewTopConstraint?.constant = -10
+            isExpanded = false
+        }
         delegate?.stopButtonDidReceiveTouchUpInside()
     }
     
@@ -153,6 +185,10 @@ class PopupPlayerView: UIView {
     
     @objc func nextSongButtonDidReceiveTouchUpInside() {
         delegate?.nextSongButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func closePlayerButtonDidReceiveTouchUpInside() {
+        
     }
     
     func playSong(title: String) {

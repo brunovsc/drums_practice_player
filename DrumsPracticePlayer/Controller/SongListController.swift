@@ -19,6 +19,8 @@ class SongListController: UIViewController {
     var currentSelectedSongIndex: Int = -1
     
     var popupPlayerViewBottomConstraint: NSLayoutConstraint?
+    var popupPlayerViewTopConstraint: NSLayoutConstraint?
+    var popupPlayerViewHeightConstraint: NSLayoutConstraint?
     
     lazy var songsTableView: UITableView = {
         let songsTableView = UITableView()
@@ -76,8 +78,12 @@ class SongListController: UIViewController {
         view.addSubview(popupPlayerView)
         popupPlayerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         popupPlayerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        popupPlayerViewBottomConstraint = popupPlayerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: PopupPlayerView.height)
+        popupPlayerViewBottomConstraint = popupPlayerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: PopupPlayerView.minHeight + 20)
         popupPlayerViewBottomConstraint?.isActive = true
+        popupPlayerViewTopConstraint = popupPlayerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+        popupPlayerViewTopConstraint?.isActive = false
+        popupPlayerViewHeightConstraint = popupPlayerView.heightAnchor.constraint(equalToConstant: PopupPlayerView.minHeight)
+        popupPlayerViewHeightConstraint?.isActive = true
         popupPlayerView.delegate = self
     }
     
@@ -98,8 +104,6 @@ class SongListController: UIViewController {
             UIAlertController.showErrorDialog(title: "Error", message: "Failed to load songs from repository.", buttonTitle: "OK", buttonAction: nil, onController: self)
         }
     }
-    
-    
 }
 
 extension SongListController: UITableViewDelegate, UITableViewDataSource {
@@ -149,6 +153,22 @@ extension SongListController: PopupPlayerViewDelegate {
         if currentSelectedSongIndex + 1 < 0 || currentSelectedSongIndex + 1 >= songs.count { return }
         songsTableView.selectRow(at: IndexPath(row: currentSelectedSongIndex + 1, section: 0), animated: true, scrollPosition: .middle)
         playSong(at: currentSelectedSongIndex + 1)
+    }
+    
+    func expandToFullPlayer() {
+        popupPlayerViewHeightConstraint?.isActive = false
+        popupPlayerViewTopConstraint?.isActive = true
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
+            self.view.layoutIfNeeded()
+        })
+    }
+    
+    func reduceToSmallPlayer() {
+        popupPlayerViewTopConstraint?.isActive = false
+        popupPlayerViewHeightConstraint?.isActive = true
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
+            self.view.layoutIfNeeded()
+        })
     }
 }
 
@@ -212,8 +232,8 @@ extension SongListController {
     func playSong(at index: Int) {
         if index < 0 || index >= songs.count { return }
         currentSelectedSongIndex = index
-        songsTableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .middle)
         showPlayer()
+        songsTableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .middle)
         let url = songs[currentSelectedSongIndex].url
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
@@ -234,12 +254,15 @@ extension SongListController {
         self.popupPlayerViewBottomConstraint?.constant = 0
         UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
             self.view.layoutIfNeeded()
-            self.songsTableView.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: PopupPlayerView.height, right: 0)
+            self.songsTableView.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: PopupPlayerView.minHeight + 15, right: 0)
         })
     }
     
     func hidePlayer() {
-        self.popupPlayerViewBottomConstraint?.constant = PopupPlayerView.height
+        if let popupPlayerTopConstraintActive = popupPlayerViewTopConstraint?.isActive, popupPlayerTopConstraintActive {
+            reduceToSmallPlayer()
+        }
+        self.popupPlayerViewBottomConstraint?.constant = PopupPlayerView.minHeight + 20
         UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
             self.view.layoutIfNeeded()
             self.songsTableView.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
