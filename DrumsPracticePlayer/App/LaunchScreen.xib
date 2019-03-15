@@ -15,9 +15,50 @@
         <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oAu-IH-Ei8">
+                    <rect key="frame" x="98" y="188.5" width="179.5" height="210"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="NuP-Z4-dq6">
+                            <rect key="frame" x="39.5" y="0.0" width="100" height="100"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="NuP-Z4-dq6" secondAttribute="height" multiplier="1:1" id="6xO-Ym-5iK"/>
+                                <constraint firstAttribute="width" constant="100" id="RPF-im-zMg"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DZH-qv-ha3">
+                            <rect key="frame" x="0.0" y="150" width="179.5" height="60"/>
+                            <string key="text">Drums Practice
+Player</string>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
+                            <color key="textColor" red="0.92931067940000001" green="0.92946994299999997" blue="0.92930072549999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="DZH-qv-ha3" secondAttribute="trailing" id="6fq-KQ-Cnc"/>
+                        <constraint firstItem="NuP-Z4-dq6" firstAttribute="top" secondItem="oAu-IH-Ei8" secondAttribute="top" id="BQv-GI-DkR"/>
+                        <constraint firstAttribute="bottom" secondItem="DZH-qv-ha3" secondAttribute="bottom" id="UiQ-mt-1U0"/>
+                        <constraint firstItem="DZH-qv-ha3" firstAttribute="leading" secondItem="oAu-IH-Ei8" secondAttribute="leading" id="h1I-2O-5gB"/>
+                        <constraint firstItem="NuP-Z4-dq6" firstAttribute="centerX" secondItem="oAu-IH-Ei8" secondAttribute="centerX" id="ioP-OJ-n70"/>
+                        <constraint firstItem="DZH-qv-ha3" firstAttribute="top" secondItem="NuP-Z4-dq6" secondAttribute="bottom" constant="50" id="zw5-M4-UYB"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="0.015686274509803921" green="0.16470588235294117" blue="0.16862745098039217" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="tintColor" red="0.015686274509803921" green="0.16470588235294117" blue="0.16862745098039217" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="oAu-IH-Ei8" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" constant="-50" id="Cd1-g0-Imh"/>
+                <constraint firstItem="oAu-IH-Ei8" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="Iqw-hK-RPN"/>
+                <constraint firstItem="oAu-IH-Ei8" firstAttribute="height" relation="lessThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="height" id="P7b-zG-9Al"/>
+                <constraint firstItem="oAu-IH-Ei8" firstAttribute="width" relation="lessThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="width" id="m1p-8E-49H"/>
+            </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="172" y="137"/>
         </view>
     </objects>
+    <resources>
+        <image name="logo" width="152" height="152"/>
+    </resources>
 </document>

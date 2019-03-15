@@ -155,20 +155,44 @@ extension SongListController: PopupPlayerViewDelegate {
         playSong(at: currentSelectedSongIndex + 1)
     }
     
-    func expandToFullPlayer() {
-        popupPlayerViewHeightConstraint?.isActive = false
-        popupPlayerViewTopConstraint?.isActive = true
-        UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
-            self.view.layoutIfNeeded()
-        })
+    func previousCheckpointButtonDidReceiveTouchUpInside() {
+        
     }
     
-    func reduceToSmallPlayer() {
+    func nextCheckpointButtonDidReceiveTouchUpInside() {
+        
+    }
+    
+    func repeatButtonDidReceiveTouchUpInside() {
+        
+    }
+    
+    func shuffleButtonDidReceiveTouchUpInside() {
+        
+    }
+    
+    func expandToFullPlayer(animations: (()->())?, completion: (()->())?) {
+        popupPlayerViewHeightConstraint?.isActive = false
+        popupPlayerViewTopConstraint?.isActive = true
+        UIView.animate(withDuration: 0.5, delay: 0/0, options: .curveEaseInOut, animations: {
+            animations?()
+            self.view.layoutIfNeeded()
+        }) { (finised) in
+            UIView.animate(withDuration: 0.2, animations: {
+                completion?()
+            })
+        }
+    }
+    
+    func reduceToSmallPlayer(animations: (()->())?, completion: (()->())?) {
         popupPlayerViewTopConstraint?.isActive = false
         popupPlayerViewHeightConstraint?.isActive = true
         UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
+            animations?()
             self.view.layoutIfNeeded()
-        })
+        }) { (finished) in
+            completion?()
+        }
     }
 }
 
@@ -259,9 +283,6 @@ extension SongListController {
     }
     
     func hidePlayer() {
-        if let popupPlayerTopConstraintActive = popupPlayerViewTopConstraint?.isActive, popupPlayerTopConstraintActive {
-            reduceToSmallPlayer()
-        }
         self.popupPlayerViewBottomConstraint?.constant = PopupPlayerView.minHeight + 20
         UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
             self.view.layoutIfNeeded()
