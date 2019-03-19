@@ -19,6 +19,8 @@
 		1E04C940222CDBE700ADC065 /* UIAlertControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C93F222CDBE700ADC065 /* UIAlertControllerExtensions.swift */; };
 		1E04C942222F200800ADC065 /* PopupPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C941222F200800ADC065 /* PopupPlayerView.swift */; };
 		1E04C944222F209D00ADC065 /* SongTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C943222F209D00ADC065 /* SongTableViewCell.swift */; };
+		1E096A5E2241399800F0CBFD /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E096A5D2241399800F0CBFD /* UserRepository.swift */; };
+		1EB7E5C9223FDCBC00084F95 /* mockedSongs.json in Resources */ = {isa = PBXBuildFile; fileRef = 1EB7E5C8223FDCBC00084F95 /* mockedSongs.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,8 @@
 		1E04C93F222CDBE700ADC065 /* UIAlertControllerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertControllerExtensions.swift; sourceTree = "<group>"; };
 		1E04C941222F200800ADC065 /* PopupPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupPlayerView.swift; sourceTree = "<group>"; };
 		1E04C943222F209D00ADC065 /* SongTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTableViewCell.swift; sourceTree = "<group>"; };
+		1E096A5D2241399800F0CBFD /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
+		1EB7E5C8223FDCBC00084F95 /* mockedSongs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mockedSongs.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				1E04C905222CD2EA00ADC065 /* Assets.xcassets */,
+				1EB7E5C8223FDCBC00084F95 /* mockedSongs.json */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -192,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				1E04C93B222CDB4100ADC065 /* SongsRepository.swift */,
+				1E096A5D2241399800F0CBFD /* UserRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -306,6 +312,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E04C934222CD5AD00ADC065 /* LaunchScreen.xib in Resources */,
+				1EB7E5C9223FDCBC00084F95 /* mockedSongs.json in Resources */,
 				1E04C906222CD2EA00ADC065 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -333,6 +340,7 @@
 			files = (
 				1E04C942222F200800ADC065 /* PopupPlayerView.swift in Sources */,
 				1E04C939222CDA8000ADC065 /* Song.swift in Sources */,
+				1E096A5E2241399800F0CBFD /* UserRepository.swift in Sources */,
 				1E04C937222CD75200ADC065 /* UIColorExtensions.swift in Sources */,
 				1E04C932222CD54E00ADC065 /* SongListController.swift in Sources */,
 				1E04C944222F209D00ADC065 /* SongTableViewCell.swift in Sources */,
@@ -494,6 +502,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QD496YT2SK;
 				INFOPLIST_FILE = DrumsPracticePlayer/App/Info.plist;
@@ -501,8 +510,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = bruvsc.DrumsPracticePlayer;
+				PRODUCT_BUNDLE_IDENTIFIER = bruvsc.DrumsPP;
 				PRODUCT_NAME = "Drums PP";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -512,6 +522,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QD496YT2SK;
 				INFOPLIST_FILE = DrumsPracticePlayer/App/Info.plist;
@@ -519,8 +530,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = bruvsc.DrumsPracticePlayer;
+				PRODUCT_BUNDLE_IDENTIFIER = bruvsc.DrumsPP;
 				PRODUCT_NAME = "Drums PP";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

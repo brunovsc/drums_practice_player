@@ -17,6 +17,7 @@ class SongListController: UIViewController {
     
     var songs: [Song] = []
     var currentSelectedSongIndex: Int = -1
+    var currentSelectedCheckpointIndex: Int = -1
     
     var popupPlayerViewBottomConstraint: NSLayoutConstraint?
     var popupPlayerViewTopConstraint: NSLayoutConstraint?
@@ -85,6 +86,8 @@ class SongListController: UIViewController {
         popupPlayerViewHeightConstraint = popupPlayerView.heightAnchor.constraint(equalToConstant: PopupPlayerView.minHeight)
         popupPlayerViewHeightConstraint?.isActive = true
         popupPlayerView.delegate = self
+        popupPlayerView.pickerViewDelegate = self
+        popupPlayerView.pickerViewDataSource = self
     }
     
     private func initializeRepository() {
@@ -133,7 +136,7 @@ extension SongListController: PopupPlayerViewDelegate {
         } else {
             showPlayer()
             player.play()
-            popupPlayerView.playSong(title: songs[currentSelectedSongIndex].title)
+            popupPlayerView.playSong(title: songs[currentSelectedSongIndex].title ?? "-")
         }
     }
     
@@ -156,11 +159,11 @@ extension SongListController: PopupPlayerViewDelegate {
     }
     
     func previousCheckpointButtonDidReceiveTouchUpInside() {
-        
+        selectCheckpoint(currentSelectedCheckpointIndex - 1)
     }
     
     func nextCheckpointButtonDidReceiveTouchUpInside() {
-        
+        selectCheckpoint(currentSelectedCheckpointIndex + 1)
     }
     
     func repeatButtonDidReceiveTouchUpInside() {
@@ -169,6 +172,15 @@ extension SongListController: PopupPlayerViewDelegate {
     
     func shuffleButtonDidReceiveTouchUpInside() {
         
+    }
+    
+    func selectCheckpoint(_ checkpoint: Int) {
+        currentSelectedCheckpointIndex = checkpoint
+        var time = songs[currentSelectedSongIndex].checkpoints?[checkpoint].time ?? 0
+        if time - 1 >= 0 {
+            time = time - 1
+        }
+        player?.currentTime = time
     }
     
     func expandToFullPlayer(animations: (()->())?, completion: (()->())?) {
@@ -256,9 +268,10 @@ extension SongListController {
     func playSong(at index: Int) {
         if index < 0 || index >= songs.count { return }
         currentSelectedSongIndex = index
+        currentSelectedCheckpointIndex = 0
         showPlayer()
         songsTableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .middle)
-        let url = songs[currentSelectedSongIndex].url
+        guard let url = songs[currentSelectedSongIndex].url else { return }
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
@@ -266,11 +279,14 @@ extension SongListController {
             guard let player = player else { return }
             player.delegate = self
             player.play()
-            popupPlayerView.playSong(title: songs[currentSelectedSongIndex].title)
+            popupPlayerView.playSong(title: songs[currentSelectedSongIndex].title ?? "-")
             setupNowPlaying()
         } catch _ {
-            UIAlertController.showErrorDialog(title: "Error", message: "Failed to play selected song.", buttonTitle: "OK", buttonAction: nil, onController: self)
-            stopButtonDidReceiveTouchUpInside()
+            player?.stop()
+            UIAlertController.showErrorDialog(title: "Error", message: "Failed to play selected song.", buttonTitle: "OK", buttonAction: {
+                self.popupPlayerView.stopPlayer()
+            }, onController: self)
+            
         }
     }
     
@@ -291,3 +307,20 @@ extension SongListController {
     }
 }
 
+extension SongListController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return songs[currentSelectedSongIndex].checkpoints?.count ?? 0
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return songs[currentSelectedSongIndex].checkpoints?[row].name ?? "-"
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        selectCheckpoint(row)
+    }
+}

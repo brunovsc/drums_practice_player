@@ -27,10 +27,24 @@ class PopupPlayerView: UIView {
     static let maxHeight: CGFloat = 500
     static let buttonSize: CGFloat = 40
     
-    var isExpanded = false
+    var isExpanded = false {
+        didSet {
+            UIApplication.shared.isIdleTimerDisabled = isExpanded
+        }
+    }
     var containerViewTopConstraint: NSLayoutConstraint?
     var titleLabelTopConstraint: NSLayoutConstraint?
     var delegate: PopupPlayerViewDelegate?
+    var pickerViewDelegate: UIPickerViewDelegate? {
+        didSet {
+            checkpointPickerView.delegate = pickerViewDelegate
+        }
+    }
+    var pickerViewDataSource: UIPickerViewDataSource? {
+        didSet {
+            checkpointPickerView.dataSource = pickerViewDataSource
+        }
+    }
     
     lazy var containerView: UIView = {
         let container = UIView()
@@ -137,7 +151,7 @@ class PopupPlayerView: UIView {
     }()
     
     lazy var checkpointsStackView: UIStackView = {
-        let checkpoint = UIStackView(arrangedSubviews: [previousCheckpointButton, checkpointLabel, nextCheckpointButton])
+        let checkpoint = UIStackView(arrangedSubviews: [previousCheckpointButton, checkpointPickerView, nextCheckpointButton])
         checkpoint.axis = .vertical
         checkpoint.alignment = .center
         checkpoint.distribution = .equalSpacing
@@ -236,6 +250,33 @@ class PopupPlayerView: UIView {
         return buttons
     }()
     
+    lazy var topSeparatorView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .dark_green
+        return view
+    }()
+    
+    lazy var bottomSeparatorView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .dark_green
+        return view
+    }()
+    
+    lazy var checkpointsContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    var checkpointPickerView: UIPickerView = {
+        let pickerView = UIPickerView()
+        pickerView.showsSelectionIndicator = false
+        pickerView.translatesAutoresizingMaskIntoConstraints = false
+        return pickerView
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -247,10 +288,10 @@ class PopupPlayerView: UIView {
     
     func setupView() {
         backgroundColor = .dark_green
-        setupContainerView()
+        setupPlayerView()
     }
     
-    func setupContainerView() {
+    func setupPlayerView() {
         addSubview(containerView)
         containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
         containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
@@ -262,7 +303,159 @@ class PopupPlayerView: UIView {
         containerView.addGestureRecognizer(tapGestureRecognizer)
         setupTitleLabel()
         setupCloseButton()
-        setupButtonsContainerView()
+        setupRetractedPlayerButtonsStackView()
+    }
+    
+    func setupTitleLabel() {
+        containerView.addSubview(titleLabel)
+        titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
+        titleLabelTopConstraint = titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20)
+        titleLabelTopConstraint?.isActive = true
+    }
+    
+    func setupCloseButton() {
+        containerView.addSubview(closePlayerButton)
+        closePlayerButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
+        closePlayerButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20).isActive = true
+        closePlayerButton.isHidden = true
+    }
+    
+    func setupRetractedPlayerButtonsStackView() {
+        containerView.addSubview(buttonsStackView)
+        buttonsStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20).isActive = true
+        buttonsStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
+        buttonsStackView.topAnchor.constraint(greaterThanOrEqualTo: titleLabel.bottomAnchor, constant: 10).isActive = true
+        buttonsStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20).isActive = true
+        buttonsStackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
+    
+    func setupExpandedPlayerContainerView() {
+        containerView.addSubview(expandedPlayerContainerView)
+        expandedPlayerContainerView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20).isActive = true
+        expandedPlayerContainerView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
+        expandedPlayerContainerView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20).isActive = true
+        expandedPlayerContainerView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 50).isActive = true
+        
+        expandedPlayerContainerView.addSubview(topSeparatorView)
+        topSeparatorView.topAnchor.constraint(equalTo: closePlayerButton.bottomAnchor, constant: 20).isActive = true
+        topSeparatorView.widthAnchor.constraint(equalTo: expandedPlayerContainerView.widthAnchor).isActive = true
+        topSeparatorView.centerXAnchor.constraint(equalTo: expandedPlayerContainerView.centerXAnchor).isActive = true
+        topSeparatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        
+        setupCheckpointContainerView()
+        
+        expandedPlayerContainerView.addSubview(bottomSeparatorView)
+        bottomSeparatorView.topAnchor.constraint(equalTo: checkpointsContainerView.bottomAnchor).isActive = true
+        bottomSeparatorView.widthAnchor.constraint(equalTo: expandedPlayerContainerView.widthAnchor).isActive = true
+        bottomSeparatorView.centerXAnchor.constraint(equalTo: expandedPlayerContainerView.centerXAnchor).isActive = true
+        bottomSeparatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        
+        setupExpandedPlayerButtonsContainerView()
+    }
+    
+    func setupCheckpointContainerView() {
+        expandedPlayerContainerView.addSubview(checkpointsContainerView)
+        checkpointsContainerView.widthAnchor.constraint(equalTo: expandedPlayerContainerView.widthAnchor).isActive = true
+        checkpointsContainerView.centerXAnchor.constraint(equalTo: expandedPlayerContainerView.centerXAnchor).isActive = true
+        checkpointsContainerView.topAnchor.constraint(equalTo: topSeparatorView.bottomAnchor).isActive = true
+        
+        checkpointsContainerView.addSubview(checkpointsStackView)
+        checkpointsStackView.centerXAnchor.constraint(equalTo: checkpointsContainerView.centerXAnchor).isActive = true
+        checkpointsStackView.centerYAnchor.constraint(equalTo: checkpointsContainerView.centerYAnchor).isActive = true
+        checkpointsStackView.widthAnchor.constraint(equalTo: checkpointsContainerView.widthAnchor, constant: -40).isActive = true
+        checkpointsStackView.heightAnchor.constraint(lessThanOrEqualTo: checkpointsContainerView.heightAnchor, constant: -40).isActive = true
+    }
+    
+    func setupExpandedPlayerButtonsContainerView() {
+        let buttonsContainer = UIView()
+        buttonsContainer.translatesAutoresizingMaskIntoConstraints = false
+        expandedPlayerContainerView.addSubview(buttonsContainer)
+        buttonsContainer.centerXAnchor.constraint(equalTo: expandedPlayerContainerView.centerXAnchor).isActive = true
+        buttonsContainer.widthAnchor.constraint(equalTo: expandedPlayerContainerView.widthAnchor).isActive = true
+        buttonsContainer.bottomAnchor.constraint(equalTo: expandedPlayerContainerView.bottomAnchor).isActive = true
+        buttonsContainer.topAnchor.constraint(equalTo: bottomSeparatorView.bottomAnchor, constant: 50).isActive = true
+        
+        buttonsContainer.addSubview(expandedSongButtonsStackView)
+        expandedSongButtonsStackView.leadingAnchor.constraint(equalTo: buttonsContainer.leadingAnchor).isActive = true
+        expandedSongButtonsStackView.trailingAnchor.constraint(equalTo: buttonsContainer.trailingAnchor).isActive = true
+        expandedSongButtonsStackView.topAnchor.constraint(equalTo: buttonsContainer.topAnchor).isActive = true
+        expandedSongButtonsStackView.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        
+        buttonsContainer.addSubview(expandedOptionButtonsStackView)
+        expandedOptionButtonsStackView.leadingAnchor.constraint(equalTo: buttonsContainer.leadingAnchor, constant: 75).isActive = true
+        expandedOptionButtonsStackView.trailingAnchor.constraint(equalTo: buttonsContainer.trailingAnchor, constant: -75).isActive = true
+        expandedOptionButtonsStackView.bottomAnchor.constraint(equalTo: buttonsContainer.bottomAnchor).isActive = true
+        expandedOptionButtonsStackView.topAnchor.constraint(equalTo: expandedSongButtonsStackView.bottomAnchor, constant: 20).isActive = true
+        expandedOptionButtonsStackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        buttonsContainer.heightAnchor.constraint(equalToConstant: 140).isActive = true
+    }
+    
+    @objc func playPauseButtonDidReceiveTouchUpInside() {
+        delegate?.playPauseButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func stopButtonDidReceiveTouchUpInside() {
+        delegate?.stopButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func previousSongButtonDidReceiveTouchUpInside() {
+        delegate?.previousSongButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func nextSongButtonDidReceiveTouchUpInside() {
+        delegate?.nextSongButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func closePlayerButtonDidReceiveTouchUpInside() {
+        if isExpanded {
+            retractAndHidePlayer()
+        }
+    }
+    
+    @objc func previousCheckpointButtonDidReceiveTouchUpInside() {
+        if checkpointPickerView.selectedRow(inComponent: 0) - 1 >= 0 {
+            checkpointPickerView.selectRow(checkpointPickerView.selectedRow(inComponent: 0) - 1, inComponent: 0, animated: true)
+            delegate?.previousCheckpointButtonDidReceiveTouchUpInside()
+        }
+    }
+    
+    @objc func nextCheckpointButtonDidReceiveTouchUpInside() {
+        if checkpointPickerView.selectedRow(inComponent: 0) + 1 < checkpointPickerView.numberOfRows(inComponent: 0) {
+            checkpointPickerView.selectRow(checkpointPickerView.selectedRow(inComponent: 0) + 1, inComponent: 0, animated: true)
+            delegate?.nextCheckpointButtonDidReceiveTouchUpInside()
+        }
+    }
+    
+    @objc func repeatButtonDidReceiveTouchUpInside() {
+        delegate?.repeatButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func shuffleButtonDidReceiveTouchUpInside() {
+        delegate?.shuffleButtonDidReceiveTouchUpInside()
+    }
+    
+    func playSong(title: String) {
+        titleLabel.attributedText = NSAttributedString(string: title)
+        isExpanded ? expandTitleLabel() : retractTitleLabel()
+        playPauseButton.setImage(UIImage(named: "pause"), for: .normal)
+        expandedPlayPauseButton.setImage(UIImage(named: "pause"), for: .normal)
+        checkpointPickerView.reloadAllComponents()
+        if let numberOfCheckpoints = pickerViewDataSource?.pickerView(checkpointPickerView, numberOfRowsInComponent: 0) {
+            checkpointsContainerView.isHidden = numberOfCheckpoints == 0
+        } else {
+            checkpointsContainerView.isHidden = true
+        }
+    }
+    
+    func pauseSong() {
+        playPauseButton.setImage(UIImage(named: "play"), for: .normal)
+        expandedPlayPauseButton.setImage(UIImage(named: "play"), for: .normal)
+    }
+    
+    func stopPlayer() {
+        isExpanded ? closePlayerButtonDidReceiveTouchUpInside() : stopButtonDidReceiveTouchUpInside()
     }
     
     func expandTitleLabel() {
@@ -336,122 +529,4 @@ class PopupPlayerView: UIView {
             self.isExpanded = true
         }
     }
-    
-    func setupTitleLabel() {
-        containerView.addSubview(titleLabel)
-        titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
-        titleLabelTopConstraint = titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20)
-        titleLabelTopConstraint?.isActive = true
-    }
-    
-    func setupCloseButton() {
-        containerView.addSubview(closePlayerButton)
-        closePlayerButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
-        closePlayerButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20).isActive = true
-        closePlayerButton.isHidden = true
-    }
-    
-    func setupButtonsContainerView() {
-        containerView.addSubview(buttonsStackView)
-        buttonsStackView.backgroundColor = .black
-        buttonsStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20).isActive = true
-        buttonsStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
-        buttonsStackView.topAnchor.constraint(greaterThanOrEqualTo: titleLabel.bottomAnchor, constant: 10).isActive = true
-        buttonsStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20).isActive = true
-        buttonsStackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-    }
-    
-    func setupExpandedPlayerContainerView() {
-        containerView.addSubview(expandedPlayerContainerView)
-        expandedPlayerContainerView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20).isActive = true
-        expandedPlayerContainerView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
-        expandedPlayerContainerView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20).isActive = true
-        expandedPlayerContainerView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 50).isActive = true
-        setupCheckpointContainerView()
-        setupExpandedPlayerButtonsContainerView()
-    }
-    
-    func setupCheckpointContainerView() {
-        expandedPlayerContainerView.addSubview(checkpointsStackView)
-        checkpointsStackView.leadingAnchor.constraint(equalTo: expandedPlayerContainerView.leadingAnchor).isActive = true
-        checkpointsStackView.trailingAnchor.constraint(equalTo: expandedPlayerContainerView.trailingAnchor).isActive = true
-        checkpointsStackView.topAnchor.constraint(equalTo: expandedPlayerContainerView.topAnchor, constant: 50).isActive = true
-    }
-    
-    func setupExpandedPlayerButtonsContainerView() {
-        let buttonsContainer = UIView()
-        buttonsContainer.translatesAutoresizingMaskIntoConstraints = false
-        expandedPlayerContainerView.addSubview(buttonsContainer)
-        buttonsContainer.centerXAnchor.constraint(equalTo: expandedPlayerContainerView.centerXAnchor).isActive = true
-        buttonsContainer.widthAnchor.constraint(equalTo: expandedPlayerContainerView.widthAnchor).isActive = true
-        buttonsContainer.bottomAnchor.constraint(equalTo: expandedPlayerContainerView.bottomAnchor).isActive = true
-        buttonsContainer.topAnchor.constraint(greaterThanOrEqualTo: checkpointsStackView.bottomAnchor, constant: 50).isActive = true
-        
-        buttonsContainer.addSubview(expandedSongButtonsStackView)
-        expandedSongButtonsStackView.leadingAnchor.constraint(equalTo: buttonsContainer.leadingAnchor).isActive = true
-        expandedSongButtonsStackView.trailingAnchor.constraint(equalTo: buttonsContainer.trailingAnchor).isActive = true
-        expandedSongButtonsStackView.topAnchor.constraint(equalTo: buttonsContainer.topAnchor).isActive = true
-        expandedSongButtonsStackView.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        
-        buttonsContainer.addSubview(expandedOptionButtonsStackView)
-        expandedOptionButtonsStackView.leadingAnchor.constraint(equalTo: buttonsContainer.leadingAnchor, constant: 75).isActive = true
-        expandedOptionButtonsStackView.trailingAnchor.constraint(equalTo: buttonsContainer.trailingAnchor, constant: -75).isActive = true
-        expandedOptionButtonsStackView.bottomAnchor.constraint(equalTo: buttonsContainer.bottomAnchor).isActive = true
-        expandedOptionButtonsStackView.topAnchor.constraint(equalTo: expandedSongButtonsStackView.bottomAnchor, constant: 20).isActive = true
-        expandedOptionButtonsStackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        buttonsContainer.heightAnchor.constraint(equalToConstant: 140).isActive = true
-    }
-    
-    @objc func playPauseButtonDidReceiveTouchUpInside() {
-        delegate?.playPauseButtonDidReceiveTouchUpInside()
-    }
-    
-    @objc func stopButtonDidReceiveTouchUpInside() {
-        delegate?.stopButtonDidReceiveTouchUpInside()
-    }
-    
-    @objc func previousSongButtonDidReceiveTouchUpInside() {
-        delegate?.previousSongButtonDidReceiveTouchUpInside()
-    }
-    
-    @objc func nextSongButtonDidReceiveTouchUpInside() {
-        delegate?.nextSongButtonDidReceiveTouchUpInside()
-    }
-    
-    @objc func closePlayerButtonDidReceiveTouchUpInside() {
-        if isExpanded {
-            retractAndHidePlayer()
-        }
-    }
-    
-    @objc func previousCheckpointButtonDidReceiveTouchUpInside() {
-        delegate?.previousCheckpointButtonDidReceiveTouchUpInside()
-    }
-    
-    @objc func nextCheckpointButtonDidReceiveTouchUpInside() {
-        delegate?.nextCheckpointButtonDidReceiveTouchUpInside()
-    }
-    
-    @objc func repeatButtonDidReceiveTouchUpInside() {
-        delegate?.repeatButtonDidReceiveTouchUpInside()
-    }
-    
-    @objc func shuffleButtonDidReceiveTouchUpInside() {
-        delegate?.shuffleButtonDidReceiveTouchUpInside()
-    }
-    
-    func playSong(title: String) {
-        titleLabel.attributedText = NSAttributedString(string: title)
-        isExpanded ? expandTitleLabel() : retractTitleLabel()
-        playPauseButton.setImage(UIImage(named: "pause"), for: .normal)
-        expandedPlayPauseButton.setImage(UIImage(named: "pause"), for: .normal)
-    }
-    
-    func pauseSong() {
-        playPauseButton.setImage(UIImage(named: "play"), for: .normal)
-        expandedPlayPauseButton.setImage(UIImage(named: "play"), for: .normal)
-    }
-    
 }

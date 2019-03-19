@@ -8,9 +8,21 @@
 
 import Foundation
 
-struct Song {
+struct Song: Decodable {
 //    let id: Int
-    let title: String
+    let title: String?
 //    let number: Int
-    let url: URL
+    var url: URL?
+//    let uploaded: Bool
+    let checkpoints: [Checkpoint]?
+}
+
+struct Checkpoint: Decodable {
+    let name: String?
+    let time: Double?
+    let tempo: Int?
+}
+
+struct SongList: Decodable {
+    var songs: [Song]?
 }

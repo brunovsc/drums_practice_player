@@ -14,6 +14,6 @@ extension UIAlertController {
         alert.addAction(UIAlertAction(title: buttonTitle, style: .cancel, handler: { (action) in
             buttonAction?()
         }))
-        onController.show(alert, sender: nil)
+        onController.present(alert, animated: true, completion: nil)
     }
 }

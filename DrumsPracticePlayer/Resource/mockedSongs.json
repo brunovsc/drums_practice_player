@@ -1,0 +1,177 @@
+{
+    "songs": [
+        {
+            "id": 0,
+            "title": "Yellow",
+            "artist": "Coldplay",
+            "number": 1,
+            "tempo": 100,
+            "checkpoints": [
+                {
+                    "name": "Intro",
+                    "time": 0
+                },
+                {
+                    "name": "Verse 1",
+                    "time": 32
+                },
+                {
+                    "name": "Verse 2",
+                    "time": 66
+                },
+                {
+                    "name": "Pre Chorus 1",
+                    "time": 88
+                },
+                {
+                    "name": "Chorus 1",
+                    "time": 110
+                },
+                {
+                    "name": "Verse 3",
+                    "time": 132
+                },
+                {
+                    "name": "Verse 4",
+                    "time": 149
+                },
+                {
+                    "name": "Pre Chorus 2",
+                    "time": 170
+                },
+                {
+                    "name": "Chorus 2",
+                    "time": 193
+                },
+                {
+                    "name": "Bridge",
+                    "time": 215
+                },
+                {
+                    "name": "Ending",
+                    "time": 249
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "title": "What I've Done",
+            "artist": "Linkin Park",
+            "number": 2,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        },
+        {
+            "id": 2,
+            "title": "It's My Life",
+            "artist": "Bon Jovi",
+            "number": 3,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        },
+        {
+            "id": 3,
+            "title": "Highway To Hell",
+            "artist": "AC/DC",
+            "number": 4,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        },
+        {
+            "id": 4,
+            "title": "Californication",
+            "artist": "Red Hot Chilli Peppers",
+            "number": 5,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        },
+        {
+            "id": 5,
+            "title": "Adventures Of A Lifetime",
+            "artist": "Coldplay",
+            "number": 6,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        },
+        {
+            "id": 6,
+            "title": "In The End",
+            "artist": "Linkin Park",
+            "number": 7,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        },
+        {
+            "id": 7,
+            "title": "Numb",
+            "artist": "Linkin Park",
+            "number": 8,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        },
+        {
+            "id": 8,
+            "title": "Going Under",
+            "artist": "Evanescence",
+            "number": 9,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        },
+        {
+            "id": 9,
+            "title": "Hysteria",
+            "artist": "Muse",
+            "number": 10,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        },
+        {
+            "id": 10,
+            "title": "Killing In The Name",
+            "artist": "Rage Against The Machine",
+            "number": 11,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        },
+        {
+            "id": 11,
+            "title": "The Kill",
+            "artist": "Thirty Seconds To Mars",
+            "number": 12,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        },
+        {
+            "id": 12,
+            "title": "R U Mine",
+            "artist": "Arctic Monkeys",
+            "number": 13,
+            "tempo": 100,
+            "checkpoints": [
+                
+            ]
+        }
+    ]
+}
