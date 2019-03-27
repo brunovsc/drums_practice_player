@@ -19,6 +19,7 @@ protocol PopupPlayerViewDelegate {
     func nextCheckpointButtonDidReceiveTouchUpInside()
     func repeatButtonDidReceiveTouchUpInside()
     func shuffleButtonDidReceiveTouchUpInside()
+    func metronomeButtonDidReceiveTouchUpInside()
 }
 
 class PopupPlayerView: UIView {
@@ -34,17 +35,9 @@ class PopupPlayerView: UIView {
     }
     var containerViewTopConstraint: NSLayoutConstraint?
     var titleLabelTopConstraint: NSLayoutConstraint?
-    var delegate: PopupPlayerViewDelegate?
-    var pickerViewDelegate: UIPickerViewDelegate? {
-        didSet {
-            checkpointPickerView.delegate = pickerViewDelegate
-        }
-    }
-    var pickerViewDataSource: UIPickerViewDataSource? {
-        didSet {
-            checkpointPickerView.dataSource = pickerViewDataSource
-        }
-    }
+    var delegate: (PopupPlayerViewDelegate & CheckpointsViewDelegate)?
+    var pickerViewDelegate: UIPickerViewDelegate?
+    var pickerViewDataSource: UIPickerViewDataSource?
     
     lazy var containerView: UIView = {
         let container = UIView()
@@ -69,47 +62,19 @@ class PopupPlayerView: UIView {
     }()
     
     lazy var playPauseButton: UIButton = {
-        let playPause = UIButton()
-        playPause.setImage(UIImage(named: "pause"), for: .normal)
-        playPause.addTarget(self, action: #selector(playPauseButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        playPause.translatesAutoresizingMaskIntoConstraints = false
-        playPause.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        playPause.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        return playPause
+        return UIButton.roundButton(imageName: "pause", size: PopupPlayerView.buttonSize, target: self, selector: #selector(playPauseButtonDidReceiveTouchUpInside))
     }()
     
     lazy var stopButton: UIButton = {
-        let stop = UIButton()
-        stop.setTitle("", for: .normal)
-        stop.setImage(UIImage(named: "stop"), for: .normal)
-        stop.translatesAutoresizingMaskIntoConstraints = false
-        stop.addTarget(self, action: #selector(stopButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        stop.translatesAutoresizingMaskIntoConstraints = false
-        stop.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        stop.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        return stop
+        return UIButton.roundButton(imageName: "stop", size: PopupPlayerView.buttonSize, target: self, selector: #selector(stopButtonDidReceiveTouchUpInside))
     }()
     
     lazy var previousSongButton: UIButton = {
-        let previousSong = UIButton()
-        previousSong.setTitle("", for: .normal)
-        previousSong.setImage(UIImage(named: "previous_track"), for: .normal)
-        previousSong.addTarget(self, action: #selector(previousSongButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        previousSong.translatesAutoresizingMaskIntoConstraints = false
-        previousSong.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        previousSong.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        return previousSong
+        return UIButton.roundButton(imageName: "previous_track", size: PopupPlayerView.buttonSize, target: self, selector: #selector(previousSongButtonDidReceiveTouchUpInside))
     }()
     
     lazy var nextSongButton: UIButton = {
-        let nextSong = UIButton()
-        nextSong.setTitle("", for: .normal)
-        nextSong.setImage(UIImage(named: "next_track"), for: .normal)
-        nextSong.addTarget(self, action: #selector(nextSongButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        nextSong.translatesAutoresizingMaskIntoConstraints = false
-        nextSong.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        nextSong.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        return nextSong
+        return UIButton.roundButton(imageName: "next_track", size: PopupPlayerView.buttonSize, target: self, selector: #selector(nextSongButtonDidReceiveTouchUpInside))
     }()
     
     lazy var buttonsStackView: UIStackView = {
@@ -121,54 +86,14 @@ class PopupPlayerView: UIView {
         return buttonsStackView
     }()
     
-    lazy var previousCheckpointButton: UIButton = {
-        let previousCheckpoint = UIButton()
-        previousCheckpoint.setTitle("", for: .normal)
-        previousCheckpoint.setImage(UIImage(named: "top"), for: .normal)
-        previousCheckpoint.addTarget(self, action: #selector(previousCheckpointButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        previousCheckpoint.translatesAutoresizingMaskIntoConstraints = false
-        previousCheckpoint.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        previousCheckpoint.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        return previousCheckpoint
-    }()
-    
-    lazy var nextCheckpointButton: UIButton = {
-        let nextCheckpoint = UIButton()
-        nextCheckpoint.setTitle("", for: .normal)
-        nextCheckpoint.setImage(UIImage(named: "bottom"), for: .normal)
-        nextCheckpoint.addTarget(self, action: #selector(nextCheckpointButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        nextCheckpoint.translatesAutoresizingMaskIntoConstraints = false
-        nextCheckpoint.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        nextCheckpoint.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        return nextCheckpoint
-    }()
-    
-    lazy var checkpointLabel: UILabel = {
-        let checkpoint = UILabel()
-        checkpoint.text = "Checkpoint"
-        checkpoint.translatesAutoresizingMaskIntoConstraints = false
-        return checkpoint
-    }()
-    
-    lazy var checkpointsStackView: UIStackView = {
-        let checkpoint = UIStackView(arrangedSubviews: [previousCheckpointButton, checkpointPickerView, nextCheckpointButton])
-        checkpoint.axis = .vertical
-        checkpoint.alignment = .center
-        checkpoint.distribution = .equalSpacing
-        checkpoint.spacing = 20.0
-        checkpoint.translatesAutoresizingMaskIntoConstraints = false
-        return checkpoint
+    lazy var checkpointsStackView: CheckpointsView = {
+        return CheckpointsView(delegate: delegate,
+                               pickerViewDelegate: pickerViewDelegate,
+                               pickerViewDataSource: pickerViewDataSource)
     }()
     
     lazy var closePlayerButton: UIButton = {
-        let close = UIButton()
-        close.setTitle("", for: .normal)
-        close.setImage(UIImage(named: "close"), for: .normal)
-        close.translatesAutoresizingMaskIntoConstraints = false
-        close.addTarget(self, action: #selector(closePlayerButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        close.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        close.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        return close
+        return UIButton.roundButton(imageName: "close", size: PopupPlayerView.buttonSize, target: self, selector: #selector(closePlayerButtonDidReceiveTouchUpInside))
     }()
     
     lazy var expandedPlayerContainerView: UIView = {
@@ -178,58 +103,27 @@ class PopupPlayerView: UIView {
     }()
     
     lazy var repeatButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("", for: .normal)
-        button.setImage(UIImage(named: "repeat"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(repeatButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        button.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        button.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        return button
+        return UIButton.roundButton(imageName: "repeat", size: PopupPlayerView.buttonSize, target: self, selector: #selector(repeatButtonDidReceiveTouchUpInside))
     }()
     
     lazy var shuffleButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("", for: .normal)
-        button.setImage(UIImage(named: "shuffle"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(shuffleButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        button.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        button.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        return button
+        return UIButton.roundButton(imageName: "shuffle", size: PopupPlayerView.buttonSize, target: self, selector: #selector(shuffleButtonDidReceiveTouchUpInside))
     }()
     
     lazy var expandedPreviousSongButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("", for: .normal)
-        button.setImage(UIImage(named: "previous_track"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(previousSongButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        button.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        button.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        return button
+        return UIButton.roundButton(imageName: "previous_track", size: PopupPlayerView.buttonSize, target: self, selector: #selector(previousSongButtonDidReceiveTouchUpInside))
     }()
     
     lazy var expandedNextSongButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("", for: .normal)
-        button.setImage(UIImage(named: "next_track"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(nextSongButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        button.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        button.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize).isActive = true
-        return button
+        return UIButton.roundButton(imageName: "next_track", size: PopupPlayerView.buttonSize, target: self, selector: #selector(nextSongButtonDidReceiveTouchUpInside))
     }()
     
     lazy var expandedPlayPauseButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("", for: .normal)
-        button.setImage(UIImage(named: "play"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(playPauseButtonDidReceiveTouchUpInside), for: .touchUpInside)
-        button.heightAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize + 20).isActive = true
-        button.widthAnchor.constraint(equalToConstant: PopupPlayerView.buttonSize + 20).isActive = true
-        return button
+        return UIButton.roundButton(imageName: "play", size: PopupPlayerView.buttonSize + 20, target: self, selector: #selector(playPauseButtonDidReceiveTouchUpInside))
+    }()
+    
+    lazy var metronomeButton: UIButton = {
+        return UIButton.roundButton(imageName: "metronome", size: PopupPlayerView.buttonSize, target: self, selector: #selector(metronomeButtonDidReceiveTouchUpInside))
     }()
     
     lazy var expandedSongButtonsStackView: UIStackView = {
@@ -270,28 +164,18 @@ class PopupPlayerView: UIView {
         return view
     }()
     
-    var checkpointPickerView: UIPickerView = {
-        let pickerView = UIPickerView()
-        pickerView.showsSelectionIndicator = false
-        pickerView.translatesAutoresizingMaskIntoConstraints = false
-        return pickerView
-    }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    convenience init(delegate: (PopupPlayerViewDelegate & CheckpointsViewDelegate)?,
+                     pickerViewDelegate: UIPickerViewDelegate?,
+                     pickerViewDataSource: UIPickerViewDataSource?) {
+        self.init()
+        self.delegate = delegate
+        self.pickerViewDelegate = pickerViewDelegate
+        self.pickerViewDataSource = pickerViewDataSource
         setupView()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     func setupView() {
         backgroundColor = .dark_green
-        setupPlayerView()
-    }
-    
-    func setupPlayerView() {
         addSubview(containerView)
         containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
         containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
@@ -350,6 +234,10 @@ class PopupPlayerView: UIView {
         bottomSeparatorView.widthAnchor.constraint(equalTo: expandedPlayerContainerView.widthAnchor).isActive = true
         bottomSeparatorView.centerXAnchor.constraint(equalTo: expandedPlayerContainerView.centerXAnchor).isActive = true
         bottomSeparatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        
+        expandedPlayerContainerView.addSubview(metronomeButton)
+        metronomeButton.bottomAnchor.constraint(equalTo: bottomSeparatorView.topAnchor, constant: -20).isActive = true
+        metronomeButton.trailingAnchor.constraint(equalTo: expandedPlayerContainerView.trailingAnchor, constant: 0).isActive = true
         
         setupExpandedPlayerButtonsContainerView()
     }
@@ -414,20 +302,6 @@ class PopupPlayerView: UIView {
         }
     }
     
-    @objc func previousCheckpointButtonDidReceiveTouchUpInside() {
-        if checkpointPickerView.selectedRow(inComponent: 0) - 1 >= 0 {
-            checkpointPickerView.selectRow(checkpointPickerView.selectedRow(inComponent: 0) - 1, inComponent: 0, animated: true)
-            delegate?.previousCheckpointButtonDidReceiveTouchUpInside()
-        }
-    }
-    
-    @objc func nextCheckpointButtonDidReceiveTouchUpInside() {
-        if checkpointPickerView.selectedRow(inComponent: 0) + 1 < checkpointPickerView.numberOfRows(inComponent: 0) {
-            checkpointPickerView.selectRow(checkpointPickerView.selectedRow(inComponent: 0) + 1, inComponent: 0, animated: true)
-            delegate?.nextCheckpointButtonDidReceiveTouchUpInside()
-        }
-    }
-    
     @objc func repeatButtonDidReceiveTouchUpInside() {
         delegate?.repeatButtonDidReceiveTouchUpInside()
     }
@@ -436,17 +310,17 @@ class PopupPlayerView: UIView {
         delegate?.shuffleButtonDidReceiveTouchUpInside()
     }
     
-    func playSong(title: String) {
+    @objc func metronomeButtonDidReceiveTouchUpInside() {
+        delegate?.metronomeButtonDidReceiveTouchUpInside()
+    }
+    
+    func playSong(title: String, hasCheckpoints: Bool) {
         titleLabel.attributedText = NSAttributedString(string: title)
         isExpanded ? expandTitleLabel() : retractTitleLabel()
         playPauseButton.setImage(UIImage(named: "pause"), for: .normal)
         expandedPlayPauseButton.setImage(UIImage(named: "pause"), for: .normal)
-        checkpointPickerView.reloadAllComponents()
-        if let numberOfCheckpoints = pickerViewDataSource?.pickerView(checkpointPickerView, numberOfRowsInComponent: 0) {
-            checkpointsContainerView.isHidden = numberOfCheckpoints == 0
-        } else {
-            checkpointsContainerView.isHidden = true
-        }
+        checkpointsContainerView.isHidden = !hasCheckpoints
+        checkpointsStackView.reloadCheckpoints()
     }
     
     func pauseSong() {

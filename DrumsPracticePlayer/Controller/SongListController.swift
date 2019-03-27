@@ -13,7 +13,10 @@ import MediaPlayer
 
 class SongListController: UIViewController {
     
-    var player: AVAudioPlayer?
+    override var preferredStatusBarStyle: UIStatusBarStyle { return .default }
+    
+    var songPlayer: AVAudioPlayer?
+    var metronome: MetronomePlayer?
     
     var songs: [Song] = []
     var currentSelectedSongIndex: Int = -1
@@ -30,19 +33,37 @@ class SongListController: UIViewController {
     }()
     
     lazy var popupPlayerView: PopupPlayerView = {
-        let popupPlayer = PopupPlayerView()
+        let popupPlayer = PopupPlayerView(delegate: self,
+                                          pickerViewDelegate: self,
+                                          pickerViewDataSource: self)
         popupPlayer.translatesAutoresizingMaskIntoConstraints = false
         return popupPlayer
     }()
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupPlayer()
         setupView()
         initializeRepository()
+        
+//        metronome = MetronomePlayer()
+//        metronome?.tempo = 183
+//        metronome?.tsUpper = 3
+//        metronome?.tsLower = 4
+//
+//        let metronomeSoundURL = NSURL(fileURLWithPath: Bundle.main.path(forResource: "snizzap1", ofType: "wav")!)
+//        let metronomeAccentURL = NSURL(fileURLWithPath: Bundle.main.path(forResource: "snizzap2", ofType: "wav")!)
+//
+//        metronome?.metronomeSoundPlayer = try? AVAudioPlayer(contentsOf: metronomeSoundURL as URL)
+//        metronome?.metronomeAccentPlayer = try? AVAudioPlayer(contentsOf: metronomeAccentURL as URL)
+//
+//        metronome?.metronomeSoundPlayer.prepareToPlay()
+//        metronome?.metronomeAccentPlayer.prepareToPlay()
+//
+//        metronome?.startMetronome()
     }
     
-    override var canBecomeFirstResponder: Bool {
+    override var canBecomeFirstResponder: Bool {        
         return true
     }
     
@@ -51,8 +72,29 @@ class SongListController: UIViewController {
         becomeFirstResponder()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.navigationBar.barTintColor = .light_green
+        navigationItem.backBarButtonItem?.title = "Back"
+        navigationItem.hidesBackButton = true
+//
+//        let moreNavigationButton = UIBarButtonItem(image: UIImage(named: "more"), style: .plain, target: self, action: #selector(moreNavigationButtonDidReceiveTouchUpInside))
+//        let playlistsNavigationButton = UIBarButtonItem(image: UIImage(named: "more"), style: .plain, target: self, action: #selector(playlistsNavigationButtonDidReceiveTouchUpInside))
+//        navigationItem.rightBarButtonItems = [moreNavigationButton, playlistsNavigationButton]
+    }
+    
+    @objc func moreNavigationButtonDidReceiveTouchUpInside() {
+        
+    }
+    
+    @objc func playlistsNavigationButtonDidReceiveTouchUpInside() {
+        
+    }
+    
     private func setupView() {
         title = "Drums Practice Player"
+        view.backgroundColor = .dark_green
         setupTableView()
         setupPopupPlayerView()
     }
@@ -64,12 +106,13 @@ class SongListController: UIViewController {
     private func setupTableView() {
         view.addSubview(songsTableView)
         songsTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        songsTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        songsTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        songsTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        songsTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        songsTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        songsTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         songsTableView.backgroundColor = .dark_green
         songsTableView.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
         songsTableView.separatorStyle = .none
+//        songsTableView.isEditing = true
         songsTableView.delegate = self
         songsTableView.dataSource = self
         songsTableView.register(SongTableViewCell.self, forCellReuseIdentifier: "SongTableViewCell")
@@ -77,17 +120,14 @@ class SongListController: UIViewController {
     
     private func setupPopupPlayerView() {
         view.addSubview(popupPlayerView)
-        popupPlayerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        popupPlayerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        popupPlayerViewBottomConstraint = popupPlayerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: PopupPlayerView.minHeight + 20)
+        popupPlayerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        popupPlayerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        popupPlayerViewBottomConstraint = popupPlayerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: PopupPlayerView.minHeight + 50)
         popupPlayerViewBottomConstraint?.isActive = true
         popupPlayerViewTopConstraint = popupPlayerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
         popupPlayerViewTopConstraint?.isActive = false
         popupPlayerViewHeightConstraint = popupPlayerView.heightAnchor.constraint(equalToConstant: PopupPlayerView.minHeight)
         popupPlayerViewHeightConstraint?.isActive = true
-        popupPlayerView.delegate = self
-        popupPlayerView.pickerViewDelegate = self
-        popupPlayerView.pickerViewDataSource = self
     }
     
     private func initializeRepository() {
@@ -125,23 +165,47 @@ extension SongListController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         playSong(at: indexPath.row)
     }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .none
+    }
+
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let movedSong = songs[sourceIndexPath.row]
+        songs.remove(at: sourceIndexPath.row)
+        songs.insert(movedSong, at: destinationIndexPath.row)
+    }
+}
+
+extension SongListController: CheckpointsViewDelegate {
+    func previousCheckpointButtonDidReceiveTouchUpInside() {
+        selectCheckpoint(currentSelectedCheckpointIndex - 1)
+    }
+    
+    func nextCheckpointButtonDidReceiveTouchUpInside() {
+        selectCheckpoint(currentSelectedCheckpointIndex + 1)
+    }
 }
 
 extension SongListController: PopupPlayerViewDelegate {
     func playPauseButtonDidReceiveTouchUpInside() {
-        guard let player = player else { return }
+        guard let player = songPlayer else { return }
         if player.isPlaying {
             player.pause()
             popupPlayerView.pauseSong()
         } else {
             showPlayer()
             player.play()
-            popupPlayerView.playSong(title: songs[currentSelectedSongIndex].title ?? "-")
+            popupPlayerView.playSong(title: songs[currentSelectedSongIndex].title ?? "-", hasCheckpoints: currentSongHasCheckpoints())
         }
     }
     
     func stopButtonDidReceiveTouchUpInside() {
-        player?.stop()
+        songPlayer?.stop()
         hidePlayer()
         songsTableView.deselectRow(at: IndexPath(row: currentSelectedSongIndex, section: 0), animated: false)
     }
@@ -158,14 +222,6 @@ extension SongListController: PopupPlayerViewDelegate {
         playSong(at: currentSelectedSongIndex + 1)
     }
     
-    func previousCheckpointButtonDidReceiveTouchUpInside() {
-        selectCheckpoint(currentSelectedCheckpointIndex - 1)
-    }
-    
-    func nextCheckpointButtonDidReceiveTouchUpInside() {
-        selectCheckpoint(currentSelectedCheckpointIndex + 1)
-    }
-    
     func repeatButtonDidReceiveTouchUpInside() {
         
     }
@@ -174,13 +230,28 @@ extension SongListController: PopupPlayerViewDelegate {
         
     }
     
-    func selectCheckpoint(_ checkpoint: Int) {
-        currentSelectedCheckpointIndex = checkpoint
-        var time = songs[currentSelectedSongIndex].checkpoints?[checkpoint].time ?? 0
-        if time - 1 >= 0 {
-            time = time - 1
-        }
-        player?.currentTime = time
+    func metronomeButtonDidReceiveTouchUpInside() {
+        songPlayer?.pause()
+        navigationController?.pushViewController(MetronomeViewController(song: songs[currentSelectedSongIndex]), animated: true)
+    }
+    
+    func selectCheckpoint(_ checkpointIndex: Int) {
+        currentSelectedCheckpointIndex = checkpointIndex
+        let song = songs[currentSelectedSongIndex]
+        guard let checkpoint = song.checkpoints?[checkpointIndex] else { return }
+        songPlayer?.pause()
+        songPlayer?.setVolume(0, fadeDuration: 0)
+        songPlayer?.currentTime = checkpoint.time ?? 0
+//        if let tempo = song.metronome?.tempo {
+//            metronome?.tempo = tempo
+//        } else {
+//            metronome?.tempo = checkpoint.metronome?.tempo ?? 0
+//        }
+//        metronome?.restartMetronome()
+//        DispatchQueue.main.asyncAfter(deadline: .now() + (metronome?.timeToWait() ?? 0), execute: {
+//            self.songPlayer?.play()
+//            self.songPlayer?.setVolume(1.0, fadeDuration: 0)
+//        })
     }
     
     func expandToFullPlayer(animations: (()->())?, completion: (()->())?) {
@@ -214,7 +285,7 @@ extension SongListController {
         let commandCenter = MPRemoteCommandCenter.shared()
         
         commandCenter.pauseCommand.addTarget { (event) -> MPRemoteCommandHandlerStatus in
-            guard let player = self.player else { return .commandFailed }
+            guard let player = self.songPlayer else { return .commandFailed }
             if player.rate == 1.0 {
                 player.pause()
                 return .success
@@ -223,26 +294,26 @@ extension SongListController {
         }
         
         commandCenter.playCommand.addTarget { (event) -> MPRemoteCommandHandlerStatus in
-            guard let player = self.player else { return .commandFailed }
+            guard let player = self.songPlayer else { return .commandFailed }
             player.play()
             return .success
         }
         
         commandCenter.nextTrackCommand.addTarget { (event) -> MPRemoteCommandHandlerStatus in
-            guard let _ = self.player else { return .commandFailed }
+            guard let _ = self.songPlayer else { return .commandFailed }
             self.nextSongButtonDidReceiveTouchUpInside()
             return .success
         }
         
         commandCenter.previousTrackCommand.addTarget { (event) -> MPRemoteCommandHandlerStatus in
-            guard let _ = self.player else { return .commandFailed }
+            guard let _ = self.songPlayer else { return .commandFailed }
             self.previousSongButtonDidReceiveTouchUpInside()
             return .success
         }
     }
     
     func setupNowPlaying() {
-        guard let player = player else { return }
+        guard let player = songPlayer else { return }
         var nowPlayingInfo = [String : Any]()
         nowPlayingInfo[MPMediaItemPropertyTitle] = songs[currentSelectedSongIndex].title
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime
@@ -275,14 +346,15 @@ extension SongListController {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
-            player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
-            guard let player = player else { return }
+            songPlayer = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
+            guard let player = songPlayer else { return }
             player.delegate = self
+            player.enableRate = true
             player.play()
-            popupPlayerView.playSong(title: songs[currentSelectedSongIndex].title ?? "-")
+            popupPlayerView.playSong(title: songs[currentSelectedSongIndex].title ?? "-", hasCheckpoints: currentSongHasCheckpoints())
             setupNowPlaying()
         } catch _ {
-            player?.stop()
+            songPlayer?.stop()
             UIAlertController.showErrorDialog(title: "Error", message: "Failed to play selected song.", buttonTitle: "OK", buttonAction: {
                 self.popupPlayerView.stopPlayer()
             }, onController: self)
@@ -299,7 +371,7 @@ extension SongListController {
     }
     
     func hidePlayer() {
-        self.popupPlayerViewBottomConstraint?.constant = PopupPlayerView.minHeight + 20
+        self.popupPlayerViewBottomConstraint?.constant = PopupPlayerView.minHeight + 50
         UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
             self.view.layoutIfNeeded()
             self.songsTableView.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
@@ -308,6 +380,11 @@ extension SongListController {
 }
 
 extension SongListController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func currentSongHasCheckpoints() -> Bool {
+        guard let count = songs[currentSelectedSongIndex].checkpoints?.count else { return false }
+        return count > 0
+    }
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }

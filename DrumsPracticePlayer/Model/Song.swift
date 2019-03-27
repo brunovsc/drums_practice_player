@@ -9,20 +9,27 @@
 import Foundation
 
 struct Song: Decodable {
-//    let id: Int
+//    let id: Int?
     let title: String?
-//    let number: Int
+//    let number: Int?
     var url: URL?
-//    let uploaded: Bool
+//    var uploaded: Bool?
+    let metronome: Metronome?
     let checkpoints: [Checkpoint]?
 }
 
 struct Checkpoint: Decodable {
     let name: String?
     let time: Double?
-    let tempo: Int?
+    let metronome: Metronome?
 }
 
 struct SongList: Decodable {
     var songs: [Song]?
+}
+
+struct Metronome: Decodable {
+    let tempo: Double?
+    let timeSignatureUpper: Int?
+    let timeSignatureLower: Int?
 }

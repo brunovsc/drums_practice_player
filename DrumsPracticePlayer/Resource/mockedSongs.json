@@ -5,7 +5,11 @@
             "title": "Yellow",
             "artist": "Coldplay",
             "number": 1,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignaturaLower": 4
+            },
             "checkpoints": [
                 {
                     "name": "Intro",

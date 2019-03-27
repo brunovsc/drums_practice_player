@@ -1,0 +1,6 @@
+framework module Pods_DrumsPracticePlayer {
+  umbrella header "Pods-DrumsPracticePlayer-umbrella.h"
+
+  export *
+  module * { export * }
+}

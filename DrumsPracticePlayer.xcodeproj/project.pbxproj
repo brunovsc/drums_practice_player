@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		108B986B89BCF23153715E82 /* Pods_DrumsPracticePlayerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73E508CFDED025FADD60031A /* Pods_DrumsPracticePlayerTests.framework */; };
 		1E04C8FF222CD2E800ADC065 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C8FE222CD2E800ADC065 /* AppDelegate.swift */; };
 		1E04C906222CD2EA00ADC065 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E04C905222CD2EA00ADC065 /* Assets.xcassets */; };
 		1E04C914222CD2EA00ADC065 /* DrumsPracticePlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C913222CD2EA00ADC065 /* DrumsPracticePlayerTests.swift */; };
@@ -20,7 +21,20 @@
 		1E04C942222F200800ADC065 /* PopupPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C941222F200800ADC065 /* PopupPlayerView.swift */; };
 		1E04C944222F209D00ADC065 /* SongTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E04C943222F209D00ADC065 /* SongTableViewCell.swift */; };
 		1E096A5E2241399800F0CBFD /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E096A5D2241399800F0CBFD /* UserRepository.swift */; };
+		1E096A6022413B9000F0CBFD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E096A5F22413B9000F0CBFD /* User.swift */; };
+		1E096A6222413DAC00F0CBFD /* LoginRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E096A6122413DAC00F0CBFD /* LoginRegisterViewController.swift */; };
+		1E096A6422413E2F00F0CBFD /* LoginRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E096A6322413E2F00F0CBFD /* LoginRegisterView.swift */; };
+		1E096A662241403800F0CBFD /* UIButtonExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E096A652241403800F0CBFD /* UIButtonExtensions.swift */; };
+		1E096A68224171DD00F0CBFD /* UIScrollViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E096A67224171DD00F0CBFD /* UIScrollViewExtensions.swift */; };
+		1E25A873224AA5180077D23B /* MetronomePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E25A872224AA5180077D23B /* MetronomePlayer.swift */; };
+		1E25A877224AADC60077D23B /* snizzap1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1E25A875224AADC60077D23B /* snizzap1.wav */; };
+		1E25A878224AADC60077D23B /* snizzap2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1E25A876224AADC60077D23B /* snizzap2.wav */; };
+		1E25A87A224BB1770077D23B /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E25A879224BB1770077D23B /* MetronomeView.swift */; };
+		1E25A87C224BB3DC0077D23B /* MetronomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E25A87B224BB3DC0077D23B /* MetronomeViewController.swift */; };
+		1E25A87E224BB56D0077D23B /* CheckpointsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E25A87D224BB56D0077D23B /* CheckpointsView.swift */; };
 		1EB7E5C9223FDCBC00084F95 /* mockedSongs.json in Resources */ = {isa = PBXBuildFile; fileRef = 1EB7E5C8223FDCBC00084F95 /* mockedSongs.json */; };
+		7C371AB11C11E68BB8615B56 /* Pods_DrumsPracticePlayerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA09B28EE1BC5A85AF6D2B3B /* Pods_DrumsPracticePlayerUITests.framework */; };
+		F40FC83181A853ACE1AF87B5 /* Pods_DrumsPracticePlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75DF630CA5A3F3E988DD3F9A /* Pods_DrumsPracticePlayer.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,7 +74,27 @@
 		1E04C941222F200800ADC065 /* PopupPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupPlayerView.swift; sourceTree = "<group>"; };
 		1E04C943222F209D00ADC065 /* SongTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTableViewCell.swift; sourceTree = "<group>"; };
 		1E096A5D2241399800F0CBFD /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
+		1E096A5F22413B9000F0CBFD /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		1E096A6122413DAC00F0CBFD /* LoginRegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRegisterViewController.swift; sourceTree = "<group>"; };
+		1E096A6322413E2F00F0CBFD /* LoginRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRegisterView.swift; sourceTree = "<group>"; };
+		1E096A652241403800F0CBFD /* UIButtonExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExtensions.swift; sourceTree = "<group>"; };
+		1E096A67224171DD00F0CBFD /* UIScrollViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewExtensions.swift; sourceTree = "<group>"; };
+		1E25A872224AA5180077D23B /* MetronomePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayer.swift; sourceTree = "<group>"; };
+		1E25A875224AADC60077D23B /* snizzap1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = snizzap1.wav; sourceTree = "<group>"; };
+		1E25A876224AADC60077D23B /* snizzap2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = snizzap2.wav; sourceTree = "<group>"; };
+		1E25A879224BB1770077D23B /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
+		1E25A87B224BB3DC0077D23B /* MetronomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeViewController.swift; sourceTree = "<group>"; };
+		1E25A87D224BB56D0077D23B /* CheckpointsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointsView.swift; sourceTree = "<group>"; };
 		1EB7E5C8223FDCBC00084F95 /* mockedSongs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mockedSongs.json; sourceTree = "<group>"; };
+		2F6658EC36A533E727FEE922 /* Pods-DrumsPracticePlayer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrumsPracticePlayer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DrumsPracticePlayer/Pods-DrumsPracticePlayer.debug.xcconfig"; sourceTree = "<group>"; };
+		4F927944BBA40F5A4C1E2F6C /* Pods-DrumsPracticePlayerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrumsPracticePlayerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DrumsPracticePlayerTests/Pods-DrumsPracticePlayerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		52E60E1B43A7CD6C669CE5DD /* Pods-DrumsPracticePlayerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrumsPracticePlayerUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-DrumsPracticePlayerUITests/Pods-DrumsPracticePlayerUITests.release.xcconfig"; sourceTree = "<group>"; };
+		73E508CFDED025FADD60031A /* Pods_DrumsPracticePlayerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DrumsPracticePlayerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		75DF630CA5A3F3E988DD3F9A /* Pods_DrumsPracticePlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DrumsPracticePlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		996E33E129E136F4E658B7B6 /* Pods-DrumsPracticePlayer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrumsPracticePlayer.release.xcconfig"; path = "Pods/Target Support Files/Pods-DrumsPracticePlayer/Pods-DrumsPracticePlayer.release.xcconfig"; sourceTree = "<group>"; };
+		B19BAA54532C2C2E40BD9179 /* Pods-DrumsPracticePlayerUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrumsPracticePlayerUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DrumsPracticePlayerUITests/Pods-DrumsPracticePlayerUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		BD278D240C9684BA69C484C7 /* Pods-DrumsPracticePlayerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrumsPracticePlayerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-DrumsPracticePlayerTests/Pods-DrumsPracticePlayerTests.release.xcconfig"; sourceTree = "<group>"; };
+		DA09B28EE1BC5A85AF6D2B3B /* Pods_DrumsPracticePlayerUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DrumsPracticePlayerUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F40FC83181A853ACE1AF87B5 /* Pods_DrumsPracticePlayer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,6 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				108B986B89BCF23153715E82 /* Pods_DrumsPracticePlayerTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +118,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C371AB11C11E68BB8615B56 /* Pods_DrumsPracticePlayerUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +132,8 @@
 				1E04C912222CD2EA00ADC065 /* DrumsPracticePlayerTests */,
 				1E04C91D222CD2EA00ADC065 /* DrumsPracticePlayerUITests */,
 				1E04C8FC222CD2E800ADC065 /* Products */,
+				B3ACBE9606CE179C0A53C750 /* Pods */,
+				6E6415E98032630F0AC5A3DC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -114,8 +153,8 @@
 				1E04C935222CD64400ADC065 /* Extension */,
 				1E04C93A222CDB0800ADC065 /* Repository */,
 				1E04C930222CD47700ADC065 /* App */,
-				1E04C92F222CD46A00ADC065 /* Resource */,
 				1E04C92E222CD46000ADC065 /* Controller */,
+				1E04C92F222CD46A00ADC065 /* Resource */,
 				1E04C92D222CD45B00ADC065 /* View */,
 				1E04C92C222CD45300ADC065 /* Model */,
 			);
@@ -144,6 +183,8 @@
 			isa = PBXGroup;
 			children = (
 				1E04C938222CDA8000ADC065 /* Song.swift */,
+				1E096A5F22413B9000F0CBFD /* User.swift */,
+				1E25A872224AA5180077D23B /* MetronomePlayer.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -151,8 +192,10 @@
 		1E04C92D222CD45B00ADC065 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1E25A87F224BBB130077D23B /* Cell */,
+				1E25A880224BBB400077D23B /* Controller */,
 				1E04C941222F200800ADC065 /* PopupPlayerView.swift */,
-				1E04C943222F209D00ADC065 /* SongTableViewCell.swift */,
+				1E25A87D224BB56D0077D23B /* CheckpointsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -160,7 +203,9 @@
 		1E04C92E222CD46000ADC065 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				1E096A6122413DAC00F0CBFD /* LoginRegisterViewController.swift */,
 				1E04C931222CD54E00ADC065 /* SongListController.swift */,
+				1E25A87B224BB3DC0077D23B /* MetronomeViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -168,6 +213,7 @@
 		1E04C92F222CD46A00ADC065 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				1E25A874224AADB70077D23B /* Metronome */,
 				1E04C905222CD2EA00ADC065 /* Assets.xcassets */,
 				1EB7E5C8223FDCBC00084F95 /* mockedSongs.json */,
 			);
@@ -189,6 +235,8 @@
 			children = (
 				1E04C936222CD75200ADC065 /* UIColorExtensions.swift */,
 				1E04C93F222CDBE700ADC065 /* UIAlertControllerExtensions.swift */,
+				1E096A652241403800F0CBFD /* UIButtonExtensions.swift */,
+				1E096A67224171DD00F0CBFD /* UIScrollViewExtensions.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -202,6 +250,55 @@
 			path = Repository;
 			sourceTree = "<group>";
 		};
+		1E25A874224AADB70077D23B /* Metronome */ = {
+			isa = PBXGroup;
+			children = (
+				1E25A875224AADC60077D23B /* snizzap1.wav */,
+				1E25A876224AADC60077D23B /* snizzap2.wav */,
+			);
+			path = Metronome;
+			sourceTree = "<group>";
+		};
+		1E25A87F224BBB130077D23B /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				1E04C943222F209D00ADC065 /* SongTableViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		1E25A880224BBB400077D23B /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				1E096A6322413E2F00F0CBFD /* LoginRegisterView.swift */,
+				1E25A879224BB1770077D23B /* MetronomeView.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		6E6415E98032630F0AC5A3DC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				75DF630CA5A3F3E988DD3F9A /* Pods_DrumsPracticePlayer.framework */,
+				73E508CFDED025FADD60031A /* Pods_DrumsPracticePlayerTests.framework */,
+				DA09B28EE1BC5A85AF6D2B3B /* Pods_DrumsPracticePlayerUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B3ACBE9606CE179C0A53C750 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2F6658EC36A533E727FEE922 /* Pods-DrumsPracticePlayer.debug.xcconfig */,
+				996E33E129E136F4E658B7B6 /* Pods-DrumsPracticePlayer.release.xcconfig */,
+				4F927944BBA40F5A4C1E2F6C /* Pods-DrumsPracticePlayerTests.debug.xcconfig */,
+				BD278D240C9684BA69C484C7 /* Pods-DrumsPracticePlayerTests.release.xcconfig */,
+				B19BAA54532C2C2E40BD9179 /* Pods-DrumsPracticePlayerUITests.debug.xcconfig */,
+				52E60E1B43A7CD6C669CE5DD /* Pods-DrumsPracticePlayerUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -209,9 +306,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1E04C923222CD2EA00ADC065 /* Build configuration list for PBXNativeTarget "DrumsPracticePlayer" */;
 			buildPhases = (
+				D945E5B92022CEA84315FA2C /* [CP] Check Pods Manifest.lock */,
 				1E04C8F7222CD2E800ADC065 /* Sources */,
 				1E04C8F8222CD2E800ADC065 /* Frameworks */,
 				1E04C8F9222CD2E800ADC065 /* Resources */,
+				0D3B51501C946C6603CD3D64 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -226,6 +325,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1E04C926222CD2EA00ADC065 /* Build configuration list for PBXNativeTarget "DrumsPracticePlayerTests" */;
 			buildPhases = (
+				DCF5E973DFCBBC2DA5E5E32C /* [CP] Check Pods Manifest.lock */,
 				1E04C90B222CD2EA00ADC065 /* Sources */,
 				1E04C90C222CD2EA00ADC065 /* Frameworks */,
 				1E04C90D222CD2EA00ADC065 /* Resources */,
@@ -244,6 +344,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1E04C929222CD2EA00ADC065 /* Build configuration list for PBXNativeTarget "DrumsPracticePlayerUITests" */;
 			buildPhases = (
+				1E241FB5456516F025B6B5B6 /* [CP] Check Pods Manifest.lock */,
 				1E04C916222CD2EA00ADC065 /* Sources */,
 				1E04C917222CD2EA00ADC065 /* Frameworks */,
 				1E04C918222CD2EA00ADC065 /* Resources */,
@@ -311,8 +412,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E25A877224AADC60077D23B /* snizzap1.wav in Resources */,
 				1E04C934222CD5AD00ADC065 /* LaunchScreen.xib in Resources */,
 				1EB7E5C9223FDCBC00084F95 /* mockedSongs.json in Resources */,
+				1E25A878224AADC60077D23B /* snizzap2.wav in Resources */,
 				1E04C906222CD2EA00ADC065 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -333,20 +436,126 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0D3B51501C946C6603CD3D64 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-DrumsPracticePlayer/Pods-DrumsPracticePlayer-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-DrumsPracticePlayer/Pods-DrumsPracticePlayer-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		1E241FB5456516F025B6B5B6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DrumsPracticePlayerUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D945E5B92022CEA84315FA2C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DrumsPracticePlayer-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DCF5E973DFCBBC2DA5E5E32C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DrumsPracticePlayerTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		1E04C8F7222CD2E800ADC065 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E25A873224AA5180077D23B /* MetronomePlayer.swift in Sources */,
 				1E04C942222F200800ADC065 /* PopupPlayerView.swift in Sources */,
 				1E04C939222CDA8000ADC065 /* Song.swift in Sources */,
 				1E096A5E2241399800F0CBFD /* UserRepository.swift in Sources */,
+				1E25A87E224BB56D0077D23B /* CheckpointsView.swift in Sources */,
 				1E04C937222CD75200ADC065 /* UIColorExtensions.swift in Sources */,
+				1E25A87C224BB3DC0077D23B /* MetronomeViewController.swift in Sources */,
 				1E04C932222CD54E00ADC065 /* SongListController.swift in Sources */,
+				1E096A68224171DD00F0CBFD /* UIScrollViewExtensions.swift in Sources */,
 				1E04C944222F209D00ADC065 /* SongTableViewCell.swift in Sources */,
 				1E04C8FF222CD2E800ADC065 /* AppDelegate.swift in Sources */,
+				1E096A662241403800F0CBFD /* UIButtonExtensions.swift in Sources */,
+				1E096A6422413E2F00F0CBFD /* LoginRegisterView.swift in Sources */,
 				1E04C940222CDBE700ADC065 /* UIAlertControllerExtensions.swift in Sources */,
+				1E096A6022413B9000F0CBFD /* User.swift in Sources */,
 				1E04C93C222CDB4100ADC065 /* SongsRepository.swift in Sources */,
+				1E096A6222413DAC00F0CBFD /* LoginRegisterViewController.swift in Sources */,
+				1E25A87A224BB1770077D23B /* MetronomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,6 +709,7 @@
 		};
 		1E04C924222CD2EA00ADC065 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2F6658EC36A533E727FEE922 /* Pods-DrumsPracticePlayer.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -520,6 +730,7 @@
 		};
 		1E04C925222CD2EA00ADC065 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 996E33E129E136F4E658B7B6 /* Pods-DrumsPracticePlayer.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -540,6 +751,7 @@
 		};
 		1E04C927222CD2EA00ADC065 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4F927944BBA40F5A4C1E2F6C /* Pods-DrumsPracticePlayerTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -561,6 +773,7 @@
 		};
 		1E04C928222CD2EA00ADC065 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BD278D240C9684BA69C484C7 /* Pods-DrumsPracticePlayerTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -582,6 +795,7 @@
 		};
 		1E04C92A222CD2EA00ADC065 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B19BAA54532C2C2E40BD9179 /* Pods-DrumsPracticePlayerUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -602,6 +816,7 @@
 		};
 		1E04C92B222CD2EA00ADC065 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 52E60E1B43A7CD6C669CE5DD /* Pods-DrumsPracticePlayerUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
