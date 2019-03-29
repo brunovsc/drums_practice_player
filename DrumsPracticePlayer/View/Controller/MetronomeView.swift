@@ -9,6 +9,8 @@
 import UIKit
 
 protocol MetronomeViewDelegate {
+    func turnMetronomeOn()
+    func turnMetronomeOff()
     func lessLowerTimeSignatureButtonDidReceiveTouchUpInside()
     func moreLowerTimeSignatureButtonDidReceiveTouchUpInside()
     func lessUpperTimeSignatureButtonDidReceiveTouchUpInside()
@@ -17,7 +19,7 @@ protocol MetronomeViewDelegate {
 
 class MetronomeView: UIView {
     
-    static let buttonSize: CGFloat = 40
+    static let buttonSize: CGFloat = 32
     
     var delegate: (MetronomeViewDelegate & CheckpointsViewDelegate)?
     var textFieldDelegate: UITextFieldDelegate?
@@ -50,7 +52,7 @@ class MetronomeView: UIView {
     
     lazy var tempoLabel: UILabel = {
         let label = UILabel()
-        label.text = "TEMPO:"
+        label.text = "Tempo:"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
         
@@ -58,18 +60,40 @@ class MetronomeView: UIView {
     
     lazy var tempoTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "120 bpm"
+        textField.text = "120"
+        textField.keyboardType = .numberPad
         textField.delegate = textFieldDelegate
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField        
     }()
     
-    lazy var timeSignatureTitleLabel: UILabel = {
+    lazy var tempoBpmLabel: UILabel = {
         let label = UILabel()
-        label.text = "TIME SIGNATURE"
+        label.text = "bpm"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-        
+    }()
+    
+    lazy var tempoSlider: UISlider = {
+        let slider = UISlider()
+        slider.minimumValue = 60.0
+        slider.maximumValue = 180.0
+        slider.thumbTintColor = .gray
+        slider.maximumTrackTintColor = .dark_green
+        slider.minimumTrackTintColor = .dark_green
+        slider.isContinuous = false
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        return slider
+    }()
+    
+    lazy var timeSignatureTitleLabel: UILabel = {
+        let label = UILabel()
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        label.attributedText = NSAttributedString(string: "Time signature",
+                                                  attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
     lazy var timeSignatureUpperLabel: UILabel = {
@@ -102,17 +126,23 @@ class MetronomeView: UIView {
         return UIButton.roundButton(imageName: "plus", size: MetronomeView.buttonSize, target: self, selector: #selector(moreUpperTimeSignatureButtonDidReceiveTouchUpInside))
     }()
     
-    lazy var metronomeToggle: UIButton = {
-        let button = UIButton()
-        button.setTitle("OnOff", for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
+    lazy var metronomeToggle: UISwitch = {
+        let buttonSwitch = UISwitch()
+        buttonSwitch.tintColor = .gray
+        buttonSwitch.onTintColor = .green
+        buttonSwitch.thumbTintColor = .gray
+        buttonSwitch.addTarget(self, action: #selector(metronomeToggleValueChanged), for: .valueChanged)
+        buttonSwitch.translatesAutoresizingMaskIntoConstraints = false
+        return buttonSwitch
         
     }()
     
     lazy var songTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "SONG NAME"
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        label.attributedText = NSAttributedString(string: "SONG NAME",
+                                                  attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -158,9 +188,18 @@ class MetronomeView: UIView {
         
         metronomeContainerView.addSubview(tempoTextField)
         tempoTextField.leadingAnchor.constraint(equalTo: tempoLabel.trailingAnchor, constant: 10).isActive = true
-        tempoTextField.trailingAnchor.constraint(equalTo: metronomeContainerView.trailingAnchor, constant: -20).isActive = true
         tempoTextField.centerYAnchor.constraint(equalTo: tempoLabel.centerYAnchor).isActive = true
         tempoTextField.setContentHuggingPriority(UILayoutPriority(750), for: .horizontal)
+        
+        metronomeContainerView.addSubview(tempoBpmLabel)
+        tempoBpmLabel.leadingAnchor.constraint(equalTo: tempoTextField.trailingAnchor, constant: 5).isActive = true
+        tempoBpmLabel.centerYAnchor.constraint(equalTo: tempoTextField.centerYAnchor).isActive = true
+        tempoBpmLabel.setContentHuggingPriority(UILayoutPriority(1000), for: .horizontal)
+        
+        metronomeContainerView.addSubview(tempoSlider)
+        tempoSlider.leadingAnchor.constraint(equalTo: tempoBpmLabel.trailingAnchor, constant: 20).isActive = true
+        tempoSlider.trailingAnchor.constraint(equalTo: metronomeContainerView.trailingAnchor, constant: -20).isActive = true
+        tempoSlider.centerYAnchor.constraint(equalTo: tempoBpmLabel.centerYAnchor).isActive = true
         
         metronomeContainerView.addSubview(metronomeContainerSeparatorView)
         metronomeContainerSeparatorView.topAnchor.constraint(equalTo: tempoLabel.bottomAnchor, constant: 20).isActive = true
@@ -198,6 +237,7 @@ class MetronomeView: UIView {
         moreLowerTimeSignatureButton.centerYAnchor.constraint(equalTo: timeSignatureLowerLabel.centerYAnchor).isActive = true
 
         metronomeContainerView.addSubview(metronomeToggle)
+        metronomeToggle.heightAnchor.constraint(equalToConstant: MetronomeView.buttonSize).isActive = true
         metronomeToggle.topAnchor.constraint(equalTo: timeSignatureLowerLabel.bottomAnchor, constant: 30).isActive = true
         metronomeToggle.centerXAnchor.constraint(equalTo: metronomeContainerView.centerXAnchor).isActive = true
         metronomeToggle.bottomAnchor.constraint(equalTo: metronomeContainerView.bottomAnchor, constant: -20).isActive = true
@@ -236,5 +276,29 @@ class MetronomeView: UIView {
     
     @objc func moreUpperTimeSignatureButtonDidReceiveTouchUpInside() {
         delegate?.moreUpperTimeSignatureButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func metronomeToggleValueChanged() {
+        metronomeToggle.isOn ? delegate?.turnMetronomeOn() : delegate?.turnMetronomeOff()
+    }
+    
+    func setSongName(_ name: String) {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        songTitleLabel.attributedText = NSAttributedString(string: name,
+                                                           attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
+    }
+    
+    func updateTimeSignature(lower: Int, upper: Int) {
+        timeSignatureLowerLabel.text = "\(lower)"
+        timeSignatureUpperLabel.text = "\(upper)"
+    }
+    
+    func updateTempo(_ tempo: String) {
+        tempoTextField.text = tempo
+    }
+    
+    func hideCheckpointsView() {
+        checkpointsContainerView.isHidden = true
     }
 }

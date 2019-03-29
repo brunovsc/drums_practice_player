@@ -17,6 +17,7 @@ class SongListController: UIViewController {
     
     var songPlayer: AVAudioPlayer?
     var metronome: MetronomePlayer?
+    var currentMetronomeTask: DispatchWorkItem?
     
     var songs: [Song] = []
     var currentSelectedSongIndex: Int = -1
@@ -39,28 +40,17 @@ class SongListController: UIViewController {
         popupPlayer.translatesAutoresizingMaskIntoConstraints = false
         return popupPlayer
     }()
+    
+    lazy var menuNavigationButton: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(named: "more"), style: .plain, target: self, action: #selector(menuNavigationButtonDidReceiveTouchUpInside))
+    }()
         
     override func viewDidLoad() {
         super.viewDidLoad()
         setupPlayer()
         setupView()
         initializeRepository()
-        
-//        metronome = MetronomePlayer()
-//        metronome?.tempo = 183
-//        metronome?.tsUpper = 3
-//        metronome?.tsLower = 4
-//
-//        let metronomeSoundURL = NSURL(fileURLWithPath: Bundle.main.path(forResource: "snizzap1", ofType: "wav")!)
-//        let metronomeAccentURL = NSURL(fileURLWithPath: Bundle.main.path(forResource: "snizzap2", ofType: "wav")!)
-//
-//        metronome?.metronomeSoundPlayer = try? AVAudioPlayer(contentsOf: metronomeSoundURL as URL)
-//        metronome?.metronomeAccentPlayer = try? AVAudioPlayer(contentsOf: metronomeAccentURL as URL)
-//
-//        metronome?.metronomeSoundPlayer.prepareToPlay()
-//        metronome?.metronomeAccentPlayer.prepareToPlay()
-//
-//        metronome?.startMetronome()
+        initializeMetronome()
     }
     
     override var canBecomeFirstResponder: Bool {        
@@ -78,18 +68,12 @@ class SongListController: UIViewController {
         navigationController?.navigationBar.barTintColor = .light_green
         navigationItem.backBarButtonItem?.title = "Back"
         navigationItem.hidesBackButton = true
-//
-//        let moreNavigationButton = UIBarButtonItem(image: UIImage(named: "more"), style: .plain, target: self, action: #selector(moreNavigationButtonDidReceiveTouchUpInside))
-//        let playlistsNavigationButton = UIBarButtonItem(image: UIImage(named: "more"), style: .plain, target: self, action: #selector(playlistsNavigationButtonDidReceiveTouchUpInside))
-//        navigationItem.rightBarButtonItems = [moreNavigationButton, playlistsNavigationButton]
+
+        navigationItem.setRightBarButton(menuNavigationButton, animated: true)
     }
     
-    @objc func moreNavigationButtonDidReceiveTouchUpInside() {
-        
-    }
-    
-    @objc func playlistsNavigationButtonDidReceiveTouchUpInside() {
-        
+    @objc func menuNavigationButtonDidReceiveTouchUpInside() {
+        navigationController?.pushViewController(MetronomeViewController(), animated: true)
     }
     
     private func setupView() {
@@ -146,6 +130,21 @@ class SongListController: UIViewController {
             guard let self = self else { return }
             UIAlertController.showErrorDialog(title: "Error", message: "Failed to load songs from repository.", buttonTitle: "OK", buttonAction: nil, onController: self)
         }
+    }
+    
+    private func initializeMetronome() {
+        metronome = MetronomePlayer()
+        guard let pathForSound = Bundle.main.path(forResource: "snizzap1", ofType: "wav"),
+            let pathForAccent = Bundle.main.path(forResource: "snizzap2", ofType: "wav") else { return }
+        
+        let metronomeSoundURL = NSURL(fileURLWithPath: pathForSound)
+        let metronomeAccentURL = NSURL(fileURLWithPath: pathForAccent)
+        
+        metronome?.metronomeSoundPlayer = try? AVAudioPlayer(contentsOf: metronomeSoundURL as URL)
+        metronome?.metronomeAccentPlayer = try? AVAudioPlayer(contentsOf: metronomeAccentURL as URL)
+        
+        metronome?.metronomeSoundPlayer.prepareToPlay()
+        metronome?.metronomeAccentPlayer.prepareToPlay()
     }
 }
 
@@ -236,25 +235,34 @@ extension SongListController: PopupPlayerViewDelegate {
     }
     
     func selectCheckpoint(_ checkpointIndex: Int) {
+        currentMetronomeTask?.cancel()
         currentSelectedCheckpointIndex = checkpointIndex
         let song = songs[currentSelectedSongIndex]
         guard let checkpoint = song.checkpoints?[checkpointIndex] else { return }
         songPlayer?.pause()
         songPlayer?.setVolume(0, fadeDuration: 0)
         songPlayer?.currentTime = checkpoint.time ?? 0
-//        if let tempo = song.metronome?.tempo {
-//            metronome?.tempo = tempo
-//        } else {
-//            metronome?.tempo = checkpoint.metronome?.tempo ?? 0
-//        }
-//        metronome?.restartMetronome()
-//        DispatchQueue.main.asyncAfter(deadline: .now() + (metronome?.timeToWait() ?? 0), execute: {
-//            self.songPlayer?.play()
-//            self.songPlayer?.setVolume(1.0, fadeDuration: 0)
-//        })
+        if let tempo = song.metronome?.tempo {
+            metronome?.tempo = tempo
+        } else {
+            metronome?.tempo = checkpoint.metronome?.tempo ?? 0
+        }
+        if metronome?.metronomeIsOn ?? false {
+            metronome?.restartMetronome()
+        } else {
+            metronome?.startMetronome()
+        }
+        currentMetronomeTask = DispatchWorkItem {
+            self.songPlayer?.play()
+            self.songPlayer?.setVolume(1.0, fadeDuration: 0)
+            self.metronome?.stopMetronome()
+        }
+        guard let task = currentMetronomeTask else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + (metronome?.timeToWait() ?? 0), execute: task)
     }
     
     func expandToFullPlayer(animations: (()->())?, completion: (()->())?) {
+        navigationItem.setRightBarButton(nil, animated: true)
         popupPlayerViewHeightConstraint?.isActive = false
         popupPlayerViewTopConstraint?.isActive = true
         UIView.animate(withDuration: 0.5, delay: 0/0, options: .curveEaseInOut, animations: {
@@ -275,6 +283,7 @@ extension SongListController: PopupPlayerViewDelegate {
             self.view.layoutIfNeeded()
         }) { (finished) in
             completion?()
+            self.navigationItem.setRightBarButton(self.menuNavigationButton, animated: true)
         }
     }
 }
@@ -340,6 +349,8 @@ extension SongListController {
         if index < 0 || index >= songs.count { return }
         currentSelectedSongIndex = index
         currentSelectedCheckpointIndex = 0
+        popupPlayerView.checkpointsStackView.pickerView.selectRow(0, inComponent: 0, animated: false)
+        popupPlayerView.playSong(title: songs[currentSelectedSongIndex].title ?? "-", hasCheckpoints: currentSongHasCheckpoints())
         showPlayer()
         songsTableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .middle)
         guard let url = songs[currentSelectedSongIndex].url else { return }
@@ -351,7 +362,6 @@ extension SongListController {
             player.delegate = self
             player.enableRate = true
             player.play()
-            popupPlayerView.playSong(title: songs[currentSelectedSongIndex].title ?? "-", hasCheckpoints: currentSongHasCheckpoints())
             setupNowPlaying()
         } catch _ {
             songPlayer?.stop()
@@ -371,9 +381,12 @@ extension SongListController {
     }
     
     func hidePlayer() {
+        currentSelectedCheckpointIndex = 0
         self.popupPlayerViewBottomConstraint?.constant = PopupPlayerView.minHeight + 50
         UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
             self.view.layoutIfNeeded()
+            self.songsTableView.deselectRow(at: IndexPath(row: self.currentSelectedSongIndex, section: 0), animated: true)
+            self.currentSelectedSongIndex = 0
             self.songsTableView.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
         })
     }
@@ -394,7 +407,11 @@ extension SongListController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return songs[currentSelectedSongIndex].checkpoints?[row].name ?? "-"
+        guard let count = songs[currentSelectedSongIndex].checkpoints?.count else { return "-" }
+        if row < count {
+            return songs[currentSelectedSongIndex].checkpoints?[row].name ?? "-"
+        }
+        return "-"
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

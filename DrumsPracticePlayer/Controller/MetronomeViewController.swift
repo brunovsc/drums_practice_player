@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class MetronomeViewController: UIViewController {
     
@@ -28,11 +29,13 @@ class MetronomeViewController: UIViewController {
     convenience init(song: Song) {
         self.init()
         self.song = song
+        initializeMetronome()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Metronome"
+        navigationItem.setLeftBarButton(UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonDidReceiveTouchUpInside)), animated: false)
         view.backgroundColor = .dark_green
         view.addSubview(scrollView)
         scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
@@ -47,11 +50,36 @@ class MetronomeViewController: UIViewController {
         metronomeView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
         metronomeView.heightAnchor.constraint(equalTo: scrollView.heightAnchor).isActive = true
         metronomeView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+        
+        if let song = song {
+            metronomeView.setSongName(song.title ?? "-")
+        } else {
+            metronomeView.hideCheckpointsView()
+        }
+        initializeMetronome()
+        metronome.tempo = song?.metronome?.tempo ?? (song?.checkpoints?[0].metronome?.tempo ?? 120.0)
+        metronome.tsUpper = song?.metronome?.timeSignatureUpper ?? (song?.checkpoints?[0].metronome?.timeSignatureUpper ?? 4)
+        metronome.tsLower = song?.metronome?.timeSignatureLower ?? (song?.checkpoints?[0].metronome?.timeSignatureLower ?? 4)
     }
     
+    @objc func backButtonDidReceiveTouchUpInside() {
+        metronome.stopMetronome()
+        navigationController?.popViewController(animated: true)
+    }
     
-    
-
+    func initializeMetronome() {
+        guard let pathForSound = Bundle.main.path(forResource: "snizzap1", ofType: "wav"),
+            let pathForAccent = Bundle.main.path(forResource: "snizzap2", ofType: "wav") else { return }
+        
+        let metronomeSoundURL = NSURL(fileURLWithPath: pathForSound)
+        let metronomeAccentURL = NSURL(fileURLWithPath: pathForAccent)
+        
+        metronome.metronomeSoundPlayer = try? AVAudioPlayer(contentsOf: metronomeSoundURL as URL)
+        metronome.metronomeAccentPlayer = try? AVAudioPlayer(contentsOf: metronomeAccentURL as URL)
+        
+        metronome.metronomeSoundPlayer.prepareToPlay()
+        metronome.metronomeAccentPlayer.prepareToPlay()
+    }
 }
 
 extension MetronomeViewController: UITextFieldDelegate {
@@ -60,28 +88,58 @@ extension MetronomeViewController: UITextFieldDelegate {
         scrollView.lastOffset = scrollView.contentOffset
         return true
     }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         scrollView.activeField?.resignFirstResponder()
         scrollView.activeField = nil
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
         return true
     }
 }
 
 extension MetronomeViewController: MetronomeViewDelegate {
     func lessLowerTimeSignatureButtonDidReceiveTouchUpInside() {
-        
+        if (metronome.tsLower - 1 >= 1) {
+            metronome.tsLower = metronome.tsLower - 1
+            metronome.restartMetronome()
+            metronomeView.updateTimeSignature(lower: metronome.tsLower, upper: metronome.tsUpper)
+        }
     }
     
     func moreLowerTimeSignatureButtonDidReceiveTouchUpInside() {
-        
+        if (metronome.tsLower + 1 <= 16) {
+            metronome.tsLower = metronome.tsLower + 1
+            metronome.restartMetronome()
+            metronomeView.updateTimeSignature(lower: metronome.tsLower, upper: metronome.tsUpper)
+        }
     }
     
     func lessUpperTimeSignatureButtonDidReceiveTouchUpInside() {
-        
+        if (metronome.tsUpper - 1 >= 1) {
+            metronome.tsUpper = metronome.tsUpper - 1
+            metronome.restartMetronome()
+            metronomeView.updateTimeSignature(lower: metronome.tsLower, upper: metronome.tsUpper)
+        }
     }
     
     func moreUpperTimeSignatureButtonDidReceiveTouchUpInside() {
-        
+        if (metronome.tsUpper + 1 <= 19) {
+            metronome.tsUpper = metronome.tsUpper + 1
+            metronome.restartMetronome()
+            metronomeView.updateTimeSignature(lower: metronome.tsLower, upper: metronome.tsUpper)
+        }
+    }
+    
+    func turnMetronomeOn() {
+        metronome.startMetronome()
+    }
+    
+    func turnMetronomeOff() {
+        metronome.stopMetronome()
     }
 }
 
@@ -93,8 +151,6 @@ extension MetronomeViewController: CheckpointsViewDelegate {
     func nextCheckpointButtonDidReceiveTouchUpInside() {
         
     }
-    
-    
 }
 
 extension MetronomeViewController: UIPickerViewDelegate {

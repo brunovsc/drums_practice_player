@@ -74,7 +74,9 @@ class SongsRepository {
                         let urlString = songsDirectory.absoluteString.replacingOccurrences(of: "///var", with: "///private/var").appending("\(songs[i].title?.replacingOccurrences(of: " ", with: "%20") ?? "-").mp3")
                         songs[i].url = URL(string: urlString)
                     }
-                    success(songs)
+                    success(songs.sorted(by: { (songA, songB) -> Bool in
+                        return (songA.title ?? "-") < (songB.title ?? "-")
+                    }))
                     return
                 }
                 success([])

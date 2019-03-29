@@ -13,47 +13,43 @@
             "checkpoints": [
                 {
                     "name": "Intro",
-                    "time": 0
+                    "time": 0.20
                 },
                 {
                     "name": "Verse 1",
-                    "time": 32
+                    "time": 33.4
                 },
                 {
                     "name": "Verse 2",
-                    "time": 66
+                    "time": 66.55
                 },
                 {
                     "name": "Pre Chorus 1",
-                    "time": 88
+                    "time": 88.7
                 },
                 {
                     "name": "Chorus 1",
-                    "time": 110
+                    "time": 110.9
                 },
                 {
                     "name": "Verse 3",
-                    "time": 132
-                },
-                {
-                    "name": "Verse 4",
-                    "time": 149
+                    "time": 133
                 },
                 {
                     "name": "Pre Chorus 2",
-                    "time": 170
+                    "time": 171.8
                 },
                 {
                     "name": "Chorus 2",
-                    "time": 193
+                    "time": 193.85
                 },
                 {
                     "name": "Bridge",
-                    "time": 215
+                    "time": 216
                 },
                 {
                     "name": "Ending",
-                    "time": 249
+                    "time": 249.2
                 }
             ]
         },
@@ -152,9 +148,80 @@
             "title": "Killing In The Name",
             "artist": "Rage Against The Machine",
             "number": 11,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 162,
+                "timeSignatureUpper": 4,
+                "timeSignaturaLower": 4
+            },
             "checkpoints": [
-                
+                {
+                    "name": "Intro 1",
+                    "time": 1.8
+                },
+                {
+                    "name": "Intro 2",
+                    "time": 19
+                },
+                {
+                    "name": "Intro 3",
+                    "time": 34.5
+                },
+                {
+                    "name": "Verse 1",
+                    "time": 43.25
+                },
+                {
+                    "name": "Verse 2",
+                    "time": 54.95
+                },
+                {
+                    "name": "Pre Chorus 1",
+                    "time": 78.45
+                },
+                {
+                    "name": "Pre Chorus 2",
+                    "time": 90.45
+                },
+                {
+                    "name": "Chorus 1",
+                    "time": 121.7
+                },
+                {
+                    "name": "Verse 3",
+                    "time": 143.55
+                },
+                {
+                    "name": "Verse 4",
+                    "time": 155.25
+                },
+                {
+                    "name": "Pre Chorus 3",
+                    "time": 166.85
+                },
+                {
+                    "name": "Pre Chorus 4",
+                    "time": 178.7
+                },
+                {
+                    "name": "Chorus 2",
+                    "time": 210.2
+                },
+                {
+                    "name": "Solo",
+                    "time": 231.7
+                },
+                {
+                    "name": "Bridge",
+                    "time": 253.3
+                },
+                {
+                    "name": "Chorus 3",
+                    "time": 276
+                },
+                {
+                    "name": "Ending",
+                    "time": 307.6
+                }
             ]
         },
         {

@@ -50,8 +50,10 @@ class CheckpointsView: UIStackView {
         axis = .vertical
         alignment = .center
         distribution = .equalSpacing
-        spacing = 20.0
+        spacing = 10.0
         translatesAutoresizingMaskIntoConstraints = false
+        heightAnchor.constraint(greaterThanOrEqualToConstant: 150).isActive = true
+        heightAnchor.constraint(lessThanOrEqualToConstant: 250).isActive = true
     }
     
     func reloadCheckpoints() {

@@ -62,6 +62,6 @@ class MetronomePlayer {
     }
     
     func timeToWait() -> TimeInterval {
-        return -0.25 + ((240.0 / Double(tsLower)) / tempo) * Double(tsUpper)
+        return ((240.0 / Double(tsLower)) / tempo) * (Double(tsUpper) * 0.9)
     }
 }
