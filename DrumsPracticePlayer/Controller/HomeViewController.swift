@@ -11,7 +11,7 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 
-class SongListController: UIViewController {
+class HomeViewController: UIViewController {
     
     override var preferredStatusBarStyle: UIStatusBarStyle { return .default }
     
@@ -39,6 +39,12 @@ class SongListController: UIViewController {
                                           pickerViewDataSource: self)
         popupPlayer.translatesAutoresizingMaskIntoConstraints = false
         return popupPlayer
+    }()
+    
+    lazy var menuView: MenuView = {
+        let view = MenuView(delegate: self)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     lazy var menuNavigationButton: UIBarButtonItem = {
@@ -70,16 +76,23 @@ class SongListController: UIViewController {
         navigationItem.hidesBackButton = true
 
         navigationItem.setRightBarButton(menuNavigationButton, animated: true)
+        
+        if popupPlayerView.isExpanded {
+            navigationItem.setRightBarButton(nil, animated: true)
+        } else {
+            self.navigationItem.setRightBarButton(self.menuNavigationButton, animated: true)
+        }
     }
     
     @objc func menuNavigationButtonDidReceiveTouchUpInside() {
-        navigationController?.pushViewController(MetronomeViewController(), animated: true)
+        menuView.isHidden = !menuView.isHidden
     }
     
     private func setupView() {
         title = "Drums Practice Player"
         view.backgroundColor = .dark_green
         setupTableView()
+        setupMenuView()
         setupPopupPlayerView()
     }
     
@@ -100,6 +113,15 @@ class SongListController: UIViewController {
         songsTableView.delegate = self
         songsTableView.dataSource = self
         songsTableView.register(SongTableViewCell.self, forCellReuseIdentifier: "SongTableViewCell")
+    }
+    
+    private func setupMenuView() {
+        view.addSubview(menuView)
+        menuView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        menuView.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        menuView.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        menuView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        menuView.isHidden = true
     }
     
     private func setupPopupPlayerView() {
@@ -148,7 +170,7 @@ class SongListController: UIViewController {
     }
 }
 
-extension SongListController: UITableViewDelegate, UITableViewDataSource {
+extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return songs.count
     }
@@ -180,7 +202,7 @@ extension SongListController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-extension SongListController: CheckpointsViewDelegate {
+extension HomeViewController: CheckpointsViewDelegate {
     func previousCheckpointButtonDidReceiveTouchUpInside() {
         selectCheckpoint(currentSelectedCheckpointIndex - 1)
     }
@@ -190,7 +212,7 @@ extension SongListController: CheckpointsViewDelegate {
     }
 }
 
-extension SongListController: PopupPlayerViewDelegate {
+extension HomeViewController: PopupPlayerViewDelegate {
     func playPauseButtonDidReceiveTouchUpInside() {
         guard let player = songPlayer else { return }
         if player.isPlaying {
@@ -229,9 +251,12 @@ extension SongListController: PopupPlayerViewDelegate {
         
     }
     
-    func metronomeButtonDidReceiveTouchUpInside() {
+    func editButtonDidReceiveTouchUpInside() {
         songPlayer?.pause()
-        navigationController?.pushViewController(MetronomeViewController(song: songs[currentSelectedSongIndex]), animated: true)
+        popupPlayerView.pauseSong()
+        if currentSelectedSongIndex != -1 {
+            navigationController?.pushViewController(SongInformationViewController(song: songs[currentSelectedSongIndex]), animated: true)
+        }
     }
     
     func selectCheckpoint(_ checkpointIndex: Int) {
@@ -288,7 +313,7 @@ extension SongListController: PopupPlayerViewDelegate {
     }
 }
 
-extension SongListController {
+extension HomeViewController {
     func setupRemoteTransportControls() {
         UIApplication.shared.beginReceivingRemoteControlEvents()
         let commandCenter = MPRemoteCommandCenter.shared()
@@ -333,9 +358,10 @@ extension SongListController {
     }
 }
 
-extension SongListController: AVAudioPlayerDelegate {
+extension HomeViewController: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         if !flag {
+            currentSelectedSongIndex = -1
             return
         }
         if currentSelectedSongIndex < songs.count - 1 {
@@ -344,7 +370,7 @@ extension SongListController: AVAudioPlayerDelegate {
     }
 }
 
-extension SongListController {
+extension HomeViewController {
     func playSong(at index: Int) {
         if index < 0 || index >= songs.count { return }
         currentSelectedSongIndex = index
@@ -392,7 +418,7 @@ extension SongListController {
     }
 }
 
-extension SongListController: UIPickerViewDelegate, UIPickerViewDataSource {
+extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func currentSongHasCheckpoints() -> Bool {
         guard let count = songs[currentSelectedSongIndex].checkpoints?.count else { return false }
         return count > 0
@@ -416,5 +442,33 @@ extension SongListController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         selectCheckpoint(row)
+    }
+}
+
+extension HomeViewController: MenuViewDelegate {
+    func metronomeButtonDidReceiveTouchUpInside() {
+        menuView.isHidden = true
+        songPlayer?.pause()
+        popupPlayerView.pauseSong()
+        if currentSelectedSongIndex == -1 {
+            navigationController?.pushViewController(MetronomeViewController(), animated: true)
+        } else {
+            navigationController?.pushViewController(MetronomeViewController(song: songs[currentSelectedSongIndex]), animated: true)
+        }
+    }
+    
+    func playlistButtonDidReceiveTouchUpInside() {
+        menuView.isHidden = true
+        
+    }
+    
+    func refreshButtonDidReceiveTouchUpInside() {
+        menuView.isHidden = true
+        
+    }
+    
+    func settingsButtonDidReceiveTouchUpInside() {
+        menuView.isHidden = true
+        
     }
 }

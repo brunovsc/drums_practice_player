@@ -86,4 +86,22 @@ class SongsRepository {
             }
         }
     }
+    
+    static func saveSongs(_ songs: [Song]) {
+        var songList = SongList()
+        songList.songs = songs
+        
+        do {
+            let songListData = try JSONEncoder().encode(songList)
+            guard let songsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(songs_folder_name) else {
+                print("asdsa")
+                return
+            }
+            let urlString = songsDirectory.absoluteString.replacingOccurrences(of: "///var", with: "///private/var").appending("songList.txt")
+            let url = URL(string: urlString)
+            try songListData.write(to: url!)
+        } catch {
+            print("asdsa")
+        }
+    }
 }

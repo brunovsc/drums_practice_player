@@ -34,19 +34,19 @@ class MetronomeView: UIView {
         return view
     }()
     
-    lazy var metronomeContainerSeparatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .dark_green
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        return view
-    }()
-    
     lazy var checkpointsContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = .light_green
         view.layer.cornerRadius = 10
         view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    lazy var metronomeContainerSeparatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .dark_green
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(equalToConstant: 1).isActive = true
         return view
     }()
     
@@ -61,6 +61,7 @@ class MetronomeView: UIView {
     lazy var tempoTextField: UITextField = {
         let textField = UITextField()
         textField.text = "120"
+        textField.returnKeyType = .done
         textField.keyboardType = .numberPad
         textField.delegate = textFieldDelegate
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -155,7 +156,7 @@ class MetronomeView: UIView {
     }()
     
     convenience init(delegate: (MetronomeViewDelegate & CheckpointsViewDelegate)?,
-                     textFieldDelegate: UITextFieldDelegate,
+                     textFieldDelegate: UITextFieldDelegate?,
                      pickerViewDelegate: UIPickerViewDelegate?,
                      pickerViewDataSource: UIPickerViewDataSource?) {
         self.init()

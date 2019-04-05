@@ -20,6 +20,7 @@ protocol PopupPlayerViewDelegate {
     func repeatButtonDidReceiveTouchUpInside()
     func shuffleButtonDidReceiveTouchUpInside()
     func metronomeButtonDidReceiveTouchUpInside()
+    func editButtonDidReceiveTouchUpInside()
 }
 
 class PopupPlayerView: UIView {
@@ -124,6 +125,10 @@ class PopupPlayerView: UIView {
     
     lazy var metronomeButton: UIButton = {
         return UIButton.roundButton(imageName: "metronome", size: PopupPlayerView.buttonSize, target: self, selector: #selector(metronomeButtonDidReceiveTouchUpInside))
+    }()
+    
+    lazy var editButton: UIButton = {
+        return UIButton.roundButton(imageName: "pencil", size: PopupPlayerView.buttonSize, target: self, selector: #selector(editButtonDidReceiveTouchUpInside))
     }()
     
     lazy var expandedSongButtonsStackView: UIStackView = {
@@ -239,6 +244,10 @@ class PopupPlayerView: UIView {
         metronomeButton.bottomAnchor.constraint(equalTo: bottomSeparatorView.topAnchor, constant: -20).isActive = true
         metronomeButton.trailingAnchor.constraint(equalTo: expandedPlayerContainerView.trailingAnchor, constant: 0).isActive = true
         
+        expandedPlayerContainerView.addSubview(editButton)
+        editButton.leadingAnchor.constraint(equalTo: expandedPlayerContainerView.leadingAnchor, constant: 0).isActive = true
+        editButton.bottomAnchor.constraint(equalTo: bottomSeparatorView.topAnchor, constant: -20).isActive = true
+        
         setupExpandedPlayerButtonsContainerView()
     }
     
@@ -312,6 +321,10 @@ class PopupPlayerView: UIView {
     
     @objc func metronomeButtonDidReceiveTouchUpInside() {
         delegate?.metronomeButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func editButtonDidReceiveTouchUpInside() {
+        delegate?.editButtonDidReceiveTouchUpInside()
     }
     
     func playSong(title: String, hasCheckpoints: Bool) {

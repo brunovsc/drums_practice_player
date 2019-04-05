@@ -60,7 +60,7 @@ extension LoginRegisterViewController: LoginRegisterViewDelegate {
             transition.duration = 0.25
             transition.type = .fade
             self.navigationController?.view.layer.add(transition, forKey: nil)
-            self.navigationController?.pushViewController(SongListController(), animated: false)
+            self.navigationController?.pushViewController(HomeViewController(), animated: false)
         }
     }
 }

@@ -8,7 +8,7 @@
             "metronome": {
                 "tempo": 87,
                 "timeSignatureUpper": 4,
-                "timeSignaturaLower": 4
+                "timeSignatureLower": 4
             },
             "checkpoints": [
                 {
@@ -58,7 +58,11 @@
             "title": "What I've Done",
             "artist": "Linkin Park",
             "number": 2,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignatureLower": 4
+            },
             "checkpoints": [
                 
             ]
@@ -68,7 +72,11 @@
             "title": "It's My Life",
             "artist": "Bon Jovi",
             "number": 3,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignatureLower": 4
+            },
             "checkpoints": [
                 
             ]
@@ -78,7 +86,11 @@
             "title": "Highway To Hell",
             "artist": "AC/DC",
             "number": 4,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignatureLower": 4
+            },
             "checkpoints": [
                 
             ]
@@ -88,7 +100,11 @@
             "title": "Californication",
             "artist": "Red Hot Chilli Peppers",
             "number": 5,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignatureLower": 4
+            },
             "checkpoints": [
                 
             ]
@@ -98,7 +114,11 @@
             "title": "Adventures Of A Lifetime",
             "artist": "Coldplay",
             "number": 6,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignatureLower": 4
+            },
             "checkpoints": [
                 
             ]
@@ -108,7 +128,11 @@
             "title": "In The End",
             "artist": "Linkin Park",
             "number": 7,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignatureLower": 4
+            },
             "checkpoints": [
                 
             ]
@@ -118,7 +142,11 @@
             "title": "Numb",
             "artist": "Linkin Park",
             "number": 8,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignatureLower": 4
+            },
             "checkpoints": [
                 
             ]
@@ -128,7 +156,11 @@
             "title": "Going Under",
             "artist": "Evanescence",
             "number": 9,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignatureLower": 4
+            },
             "checkpoints": [
                 
             ]
@@ -138,7 +170,11 @@
             "title": "Hysteria",
             "artist": "Muse",
             "number": 10,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignatureLower": 4
+            },
             "checkpoints": [
                 
             ]
@@ -151,7 +187,7 @@
             "metronome": {
                 "tempo": 162,
                 "timeSignatureUpper": 4,
-                "timeSignaturaLower": 4
+                "timeSignatureLower": 4
             },
             "checkpoints": [
                 {
@@ -229,7 +265,11 @@
             "title": "The Kill",
             "artist": "Thirty Seconds To Mars",
             "number": 12,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignatureLower": 4
+            },
             "checkpoints": [
                 
             ]
@@ -239,7 +279,11 @@
             "title": "R U Mine",
             "artist": "Arctic Monkeys",
             "number": 13,
-            "tempo": 100,
+            "metronome": {
+                "tempo": 87,
+                "timeSignatureUpper": 4,
+                "timeSignatureLower": 4
+            },
             "checkpoints": [
                 
             ]

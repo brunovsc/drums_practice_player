@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Song: Decodable {
+struct Song: Decodable, Encodable {
 //    let id: Int?
     let title: String?
 //    let number: Int?
@@ -18,17 +18,17 @@ struct Song: Decodable {
     let checkpoints: [Checkpoint]?
 }
 
-struct Checkpoint: Decodable {
+struct Checkpoint: Decodable, Encodable {
     let name: String?
     let time: Double?
     let metronome: Metronome?
 }
 
-struct SongList: Decodable {
+struct SongList: Decodable, Encodable {
     var songs: [Song]?
 }
 
-struct Metronome: Decodable {
+struct Metronome: Decodable, Encodable {
     let tempo: Double?
     let timeSignatureUpper: Int?
     let timeSignatureLower: Int?
