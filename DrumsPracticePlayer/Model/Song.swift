@@ -9,19 +9,17 @@
 import Foundation
 
 struct Song: Decodable, Encodable {
-//    let id: Int?
+    var id: Int?
     let title: String?
-//    let number: Int?
+    let artist: String?
     var url: URL?
-//    var uploaded: Bool?
-    let metronome: Metronome?
-    let checkpoints: [Checkpoint]?
+    var metronome: Metronome?
+    var checkpoints: [Checkpoint]?
 }
 
 struct Checkpoint: Decodable, Encodable {
     let name: String?
     let time: Double?
-    let metronome: Metronome?
 }
 
 struct SongList: Decodable, Encodable {
@@ -29,7 +27,7 @@ struct SongList: Decodable, Encodable {
 }
 
 struct Metronome: Decodable, Encodable {
-    let tempo: Double?
-    let timeSignatureUpper: Int?
-    let timeSignatureLower: Int?
+    var tempo: Int?
+    var timeSignatureUpper: Int?
+    var timeSignatureLower: Int?
 }

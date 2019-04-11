@@ -41,26 +41,8 @@ class SongsRepository {
     
     static func getSongs(success: @escaping (([Song]) -> Void),
                          failure: @escaping ((RepositoryError?) -> Void)) {
-//        let songsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(songs_folder_name)
-//        do {
-//            let files = try FileManager.default.contentsOfDirectory(at: songsDirectory!, includingPropertiesForKeys: nil, options: [FileManager.DirectoryEnumerationOptions.skipsHiddenFiles])
-//            var songs = [Song]()
-//            for fileURL in files {
-//                if fileURL.lastPathComponent.contains(".mp3") {
-//                    let songTitle: String = fileURL.lastPathComponent.replacingOccurrences(of: ".mp3", with: "")
-//                    let song = Song(title: songTitle, url: fileURL)
-//                    print(fileURL)
-//                    songs.append(song)
-//                }
-//            }
-//            success(songs)
-//        }
-//        catch {
-//            failure(.repository_folder_read)
-//        }
-//        return
-        
-        
+        var songs = [Song]()
+        var repositoryError: RepositoryError?
         if let path = Bundle.main.path(forResource: "mockedSongs", ofType: "json") {
             do {
                 let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
@@ -69,21 +51,43 @@ class SongsRepository {
                     failure(.repository_folder_read)
                     return
                 }
-                if var songs = songList.songs {
-                    for i in 0...songs.count - 1 {
-                        let urlString = songsDirectory.absoluteString.replacingOccurrences(of: "///var", with: "///private/var").appending("\(songs[i].title?.replacingOccurrences(of: " ", with: "%20") ?? "-").mp3")
-                        songs[i].url = URL(string: urlString)
+                if var serviceSongs = songList.songs {
+                    for i in 0...serviceSongs.count - 1 {
+                        let urlString = songsDirectory.absoluteString.replacingOccurrences(of: "///var", with: "///private/var").appending("\(serviceSongs[i].title?.replacingOccurrences(of: " ", with: "%20") ?? "-").mp3")
+                        serviceSongs[i].url = URL(string: urlString)
                     }
-                    success(songs.sorted(by: { (songA, songB) -> Bool in
-                        return (songA.title ?? "-") < (songB.title ?? "-")
-                    }))
-                    return
+                    songs.append(contentsOf: serviceSongs)
                 }
-                success([])
-                return
             } catch {
-                failure(.repository_folder_read)
+                repositoryError = .repository_folder_read
             }
+        }
+        
+        let songsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(songs_folder_name)
+        do {
+            let files = try FileManager.default.contentsOfDirectory(at: songsDirectory!, includingPropertiesForKeys: nil, options: [FileManager.DirectoryEnumerationOptions.skipsHiddenFiles])
+            for fileURL in files {
+                if fileURL.lastPathComponent.contains(".mp3") {
+                    let songTitle: String = fileURL.lastPathComponent.replacingOccurrences(of: ".mp3", with: "")
+                    let songUploaded = songs.contains { (song) -> Bool in
+                        return song.title == songTitle
+                    }
+                    if !songUploaded {
+                        let song = Song(id: nil, title: songTitle, artist: nil, url: fileURL, metronome: nil, checkpoints: nil)
+                        songs.append(song)
+                    }
+                }
+            }
+        } catch {
+            repositoryError = .repository_folder_read
+        }
+        
+        if let repositoryError = repositoryError {
+            failure(repositoryError)
+        } else {
+            success(songs.sorted(by: { (songA, songB) -> Bool in
+                return (songA.title ?? "-") < (songB.title ?? "-")
+            }))
         }
     }
     

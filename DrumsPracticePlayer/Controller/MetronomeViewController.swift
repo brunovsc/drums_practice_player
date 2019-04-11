@@ -57,9 +57,9 @@ class MetronomeViewController: UIViewController {
             metronomeView.hideCheckpointsView()
         }
         initializeMetronome()
-        metronome.tempo = song?.metronome?.tempo ?? (song?.checkpoints?[0].metronome?.tempo ?? 120.0)
-        metronome.tsUpper = song?.metronome?.timeSignatureUpper ?? (song?.checkpoints?[0].metronome?.timeSignatureUpper ?? 4)
-        metronome.tsLower = song?.metronome?.timeSignatureLower ?? (song?.checkpoints?[0].metronome?.timeSignatureLower ?? 4)
+        metronome.tempo = Double(song?.metronome?.tempo ?? 120)
+        metronome.tsUpper = song?.metronome?.timeSignatureUpper ?? 4
+        metronome.tsLower = song?.metronome?.timeSignatureLower ?? 4
     }
     
     @objc func backButtonDidReceiveTouchUpInside() {

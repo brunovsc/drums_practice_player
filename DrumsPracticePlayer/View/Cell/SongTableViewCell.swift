@@ -8,13 +8,24 @@
 
 import UIKit
 
+protocol SongTableViewCellDelegate {
+    func uploadButtonDidReceiveTouchUpInside(in cell: SongTableViewCell)
+}
+
 class SongTableViewCell: UITableViewCell {
     
-     var model: Song? {
+    var delegate: SongTableViewCellDelegate?
+    var model: Song? {
         didSet {
-            titleLabel.attributedText = NSAttributedString(string: model?.title ?? "",
-                                                           attributes: [NSAttributedString.Key.foregroundColor: UIColor.white,
-                                                                        NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14.0, weight: .regular)])
+            let infoText = NSMutableAttributedString(attributedString: NSAttributedString(string: "\(model?.title ?? "")", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white,
+                                                                                                                                        NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14.0, weight: .regular)]))
+            if let artist = model?.artist {
+                let artistText = NSAttributedString(string: "\n\(artist)", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white,
+                                                                                        NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: 14.0)])
+                infoText.append(artistText)
+            }
+            titleLabel.attributedText = infoText
+            uploadButton.isHidden = model?.id != nil
         }
     }
     
@@ -24,7 +35,8 @@ class SongTableViewCell: UITableViewCell {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
+        setupView()
     }
     
     //MARK: Setup
@@ -35,17 +47,7 @@ class SongTableViewCell: UITableViewCell {
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
-        if selected {
-            containerView.backgroundColor = .yellow
-            titleLabel.attributedText = NSAttributedString(string: titleLabel.attributedText?.string ?? "",
-                                                           attributes: [NSAttributedString.Key.foregroundColor: UIColor.white,
-                                                                        NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16.0, weight: .semibold)])
-        } else {
-            containerView.backgroundColor = .green
-            titleLabel.attributedText = NSAttributedString(string: titleLabel.attributedText?.string ?? "",
-                                                           attributes: [NSAttributedString.Key.foregroundColor: UIColor.white,
-                                                                        NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14.0, weight: .regular)])
-        }
+        containerView.backgroundColor = selected ? .yellow : .green
     }
     
     lazy var containerView: UIView = {
@@ -64,8 +66,13 @@ class SongTableViewCell: UITableViewCell {
         let title = UILabel()
         title.attributedText = NSAttributedString(string: "",
                                                   attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
+        title.numberOfLines = 0
         title.translatesAutoresizingMaskIntoConstraints = false
         return title
+    }()
+    
+    lazy var uploadButton: UIButton = {
+        return UIButton.roundButton(imageName: "upload", size: 30, target: self, selector: #selector(uploadButtonDidReceiveTouchUpInside))
     }()
     
     func setupContainerView() {
@@ -74,14 +81,20 @@ class SongTableViewCell: UITableViewCell {
         containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
         containerView.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
         containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
-        setupTitleLabel()
-    }
-    
-    func setupTitleLabel() {
+        
         containerView.addSubview(titleLabel)
         titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10).isActive = true
         titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10).isActive = true
         titleLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10).isActive = true
+        
+        containerView.addSubview(uploadButton)
+        uploadButton.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 20).isActive = true
+        uploadButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10).isActive = true
+        uploadButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
+    }
+    
+    
+    @objc func uploadButtonDidReceiveTouchUpInside() {
+        delegate?.uploadButtonDidReceiveTouchUpInside(in: self)
     }
 }

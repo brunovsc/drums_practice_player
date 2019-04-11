@@ -50,6 +50,10 @@ class HomeViewController: UIViewController {
     lazy var menuNavigationButton: UIBarButtonItem = {
         return UIBarButtonItem(image: UIImage(named: "more"), style: .plain, target: self, action: #selector(menuNavigationButtonDidReceiveTouchUpInside))
     }()
+    
+    lazy var logoutNavigationButton: UIBarButtonItem = {
+        return UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logoutNavigationButtonDidReceiveTouchUpInside))
+    }()
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,9 +76,9 @@ class HomeViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: true)
         navigationController?.navigationBar.barTintColor = .light_green
-        navigationItem.backBarButtonItem?.title = "Back"
         navigationItem.hidesBackButton = true
 
+        navigationItem.setLeftBarButton(logoutNavigationButton, animated: true)
         navigationItem.setRightBarButton(menuNavigationButton, animated: true)
         
         if popupPlayerView.isExpanded {
@@ -86,6 +90,13 @@ class HomeViewController: UIViewController {
     
     @objc func menuNavigationButtonDidReceiveTouchUpInside() {
         menuView.isHidden = !menuView.isHidden
+    }
+    
+    @objc func logoutNavigationButtonDidReceiveTouchUpInside() {
+        if let songPlayer = songPlayer, songPlayer.isPlaying {
+            songPlayer.stop()
+        }
+        navigationController?.popViewController(animated: true)
     }
     
     private func setupView() {
@@ -145,9 +156,15 @@ class HomeViewController: UIViewController {
             default:
                 return
             }
+        } else {
+            loadSongs()
         }
+    }
+    
+    private func loadSongs() {
         SongsRepository.getSongs(success: { [weak self] (songs) in
             self?.songs = songs
+            self?.songsTableView.reloadData()
         }) { [weak self] (error) in
             guard let self = self else { return }
             UIAlertController.showErrorDialog(title: "Error", message: "Failed to load songs from repository.", buttonTitle: "OK", buttonAction: nil, onController: self)
@@ -178,6 +195,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell", for: indexPath) as? SongTableViewCell {
             cell.model = songs[indexPath.row]
+            cell.delegate = self
             return cell
         }
         return UITableViewCell()
@@ -268,9 +286,7 @@ extension HomeViewController: PopupPlayerViewDelegate {
         songPlayer?.setVolume(0, fadeDuration: 0)
         songPlayer?.currentTime = checkpoint.time ?? 0
         if let tempo = song.metronome?.tempo {
-            metronome?.tempo = tempo
-        } else {
-            metronome?.tempo = checkpoint.metronome?.tempo ?? 0
+            metronome?.tempo = Double(tempo)
         }
         if metronome?.metronomeIsOn ?? false {
             metronome?.restartMetronome()
@@ -433,11 +449,8 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        guard let count = songs[currentSelectedSongIndex].checkpoints?.count else { return "-" }
-        if row < count {
-            return songs[currentSelectedSongIndex].checkpoints?[row].name ?? "-"
-        }
-        return "-"
+        guard let count = songs[currentSelectedSongIndex].checkpoints?.count, row < count else { return "-" }
+        return songs[currentSelectedSongIndex].checkpoints?[row].name ?? "-"
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -464,11 +477,19 @@ extension HomeViewController: MenuViewDelegate {
     
     func refreshButtonDidReceiveTouchUpInside() {
         menuView.isHidden = true
-        
+        loadSongs()
     }
     
     func settingsButtonDidReceiveTouchUpInside() {
         menuView.isHidden = true
         
+    }
+}
+
+extension HomeViewController: SongTableViewCellDelegate {
+    func uploadButtonDidReceiveTouchUpInside(in cell: SongTableViewCell) {
+        if let indexPath = songsTableView.indexPath(for: cell), indexPath.row < songs.count {
+            navigationController?.pushViewController(SongInformationViewController(song: songs[indexPath.row]), animated: true)
+        }
     }
 }

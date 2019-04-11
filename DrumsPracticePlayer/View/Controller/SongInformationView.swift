@@ -11,18 +11,20 @@ import UIKit
 protocol SongInformationViewDelegate {
     func saveButtonDidReceiveTouchUpInside()
     func cancelButtonDidReceiveTouchUpInside()
-    func markCheckpointButtonDidReceiveTouchUpInside()
-    func editCheckpointsButtonDidReceiveTouchUpInside()
     
     func lessLowerTimeSignatureButtonDidReceiveTouchUpInside()
     func moreLowerTimeSignatureButtonDidReceiveTouchUpInside()
     func lessUpperTimeSignatureButtonDidReceiveTouchUpInside()
     func moreUpperTimeSignatureButtonDidReceiveTouchUpInside()
+    
+    func playPauseSongButtonDidReceiveTouchUpInside()
+    func addCheckpointButtonDidReceiveTouchUpInside()
+    func sliderValueChangedToPercentage(_ percentage: Float)
 }
 
 class SongInformationView: UIView {
     
-    static let buttonSize: CGFloat = 32
+    static let buttonSize: CGFloat = 50
     var delegate: SongInformationViewDelegate?
     var textFieldDelegate: UITextFieldDelegate?
     var tableViewDelegate: UITableViewDelegate?
@@ -51,7 +53,7 @@ class SongInformationView: UIView {
         return textField
     }()
     
-    lazy var metronomeContainerSeparatorView: UIView = {
+    lazy var tempoSeparatorView: UIView = {
         let view = UIView()
         view.backgroundColor = .dark_green
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -145,34 +147,70 @@ class SongInformationView: UIView {
     
     lazy var minTimeLabel: UILabel = {
         let label = UILabel()
-        label.text = "0:00"
+        label.text = "00:00"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     lazy var maxTimeLabel: UILabel = {
         let label = UILabel()
-        label.text = "3:54"
+        label.text = "00:00"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    lazy var currentTimeLabel: UILabel = {
+        let label = UILabel()
+        label.text = "00:00"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     lazy var timeSlider: UISlider = {
         let slider = UISlider()
-        slider.minimumValue = 0
-        slider.maximumValue = 360
         slider.thumbTintColor = .gray
         slider.maximumTrackTintColor = .dark_green
         slider.minimumTrackTintColor = .dark_green
-        slider.isContinuous = true
+        slider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
         slider.translatesAutoresizingMaskIntoConstraints = false
         return slider
+    }()
+    
+    lazy var checkpointsSeparatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .dark_green
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        return view
+    }()
+    
+    lazy var playPauseSongButton: UIButton = {
+        return UIButton.roundButton(imageName: "play", size: SongInformationView.buttonSize, target: self, selector: #selector(playPauseSongButtonDidReceiveTouchUpInside))
+    }()
+    
+    lazy var addCheckpointSongButton: UIButton = {
+        return UIButton.roundButton(imageName: "checkpoint", size: SongInformationView.buttonSize, target: self, selector: #selector(addCheckpointButtonDidReceiveTouchUpInside))
+    }()
+    
+    lazy var checkpointsButtonStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [playPauseSongButton, currentTimeLabel, addCheckpointSongButton])
+        stack.axis = .horizontal
+        stack.distribution = .equalCentering
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
     }()
     
     lazy var checkpointsTableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self.tableViewDelegate
         tableView.dataSource = self.tableViewDataSource
+        tableView.backgroundColor = .light_green
+        tableView.separatorStyle = .none
+        tableView.bounces = false
+        tableView.layer.borderWidth = 1.0
+        tableView.layer.borderColor = UIColor.dark_green.cgColor
+        tableView.layer.cornerRadius = 10.0
+        tableView.register(CheckpointTableViewCell.self, forCellReuseIdentifier: "CheckpointTableViewCell")
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -185,6 +223,7 @@ class SongInformationView: UIView {
         button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        button.addTarget(self, action: #selector(saveButtonDidReceiveTouchUpInside), for: .touchUpInside)
         return button
     }()
     
@@ -196,6 +235,7 @@ class SongInformationView: UIView {
         button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        button.addTarget(self, action: #selector(cancelButtonDidReceiveTouchUpInside), for: .touchUpInside)
         return button
     }()
     
@@ -325,13 +365,13 @@ class SongInformationView: UIView {
         tempoSlider.trailingAnchor.constraint(equalTo: tempoContainerView.trailingAnchor, constant: -20).isActive = true
         tempoSlider.centerYAnchor.constraint(equalTo: tempoBpmLabel.centerYAnchor).isActive = true
         
-        tempoContainerView.addSubview(metronomeContainerSeparatorView)
-        metronomeContainerSeparatorView.topAnchor.constraint(equalTo: tempoLabel.bottomAnchor, constant: 20).isActive = true
-        metronomeContainerSeparatorView.leadingAnchor.constraint(equalTo: tempoContainerView.leadingAnchor, constant: 20).isActive = true
-        metronomeContainerSeparatorView.trailingAnchor.constraint(equalTo: tempoContainerView.trailingAnchor, constant: -20).isActive = true
+        tempoContainerView.addSubview(tempoSeparatorView)
+        tempoSeparatorView.topAnchor.constraint(equalTo: tempoLabel.bottomAnchor, constant: 20).isActive = true
+        tempoSeparatorView.leadingAnchor.constraint(equalTo: tempoContainerView.leadingAnchor, constant: 20).isActive = true
+        tempoSeparatorView.trailingAnchor.constraint(equalTo: tempoContainerView.trailingAnchor, constant: -20).isActive = true
         
         tempoContainerView.addSubview(timeSignatureTitleLabel)
-        timeSignatureTitleLabel.topAnchor.constraint(equalTo: metronomeContainerSeparatorView.bottomAnchor, constant: 20).isActive = true
+        timeSignatureTitleLabel.topAnchor.constraint(equalTo: tempoSeparatorView.bottomAnchor, constant: 20).isActive = true
         timeSignatureTitleLabel.leadingAnchor.constraint(equalTo: tempoContainerView.leadingAnchor, constant: 20).isActive = true
         timeSignatureTitleLabel.trailingAnchor.constraint(equalTo: tempoContainerView.trailingAnchor, constant: -20).isActive = true
         timeSignatureTitleLabel.centerXAnchor.constraint(equalTo: tempoContainerView.centerXAnchor).isActive = true
@@ -380,8 +420,22 @@ class SongInformationView: UIView {
         maxTimeLabel.centerYAnchor.constraint(equalTo: timeSlider.centerYAnchor).isActive = true
         maxTimeLabel.trailingAnchor.constraint(equalTo: checkpointsContainerView.trailingAnchor, constant: -20).isActive = true
         
+        checkpointsContainerView.addSubview(checkpointsButtonStackView)
+        checkpointsButtonStackView.leadingAnchor.constraint(equalTo: checkpointsContainerView.leadingAnchor, constant: 20).isActive = true
+        checkpointsButtonStackView.trailingAnchor.constraint(equalTo: checkpointsContainerView.trailingAnchor, constant: -20).isActive = true
+        checkpointsButtonStackView.topAnchor.constraint(equalTo: timeSlider.bottomAnchor, constant: 20).isActive = true
         
-//        checkpointsContainerView.addSubview(checkpointsTableView)
+        checkpointsContainerView.addSubview(checkpointsSeparatorView)
+        checkpointsSeparatorView.leadingAnchor.constraint(equalTo: checkpointsContainerView.leadingAnchor, constant: 20).isActive = true
+        checkpointsSeparatorView.trailingAnchor.constraint(equalTo: checkpointsContainerView.trailingAnchor, constant: -20).isActive = true
+        checkpointsSeparatorView.topAnchor.constraint(equalTo: checkpointsButtonStackView.bottomAnchor, constant: 20).isActive = true
+        
+        checkpointsContainerView.addSubview(checkpointsTableView)
+        checkpointsTableView.heightAnchor.constraint(greaterThanOrEqualToConstant: 200).isActive = true
+        checkpointsTableView.leadingAnchor.constraint(equalTo: checkpointsContainerView.leadingAnchor, constant: 20).isActive = true
+        checkpointsTableView.trailingAnchor.constraint(equalTo: checkpointsContainerView.trailingAnchor, constant: -20).isActive = true
+        checkpointsTableView.topAnchor.constraint(equalTo: checkpointsSeparatorView.bottomAnchor, constant: 20).isActive = true
+        checkpointsTableView.bottomAnchor.constraint(equalTo: checkpointsContainerView.bottomAnchor, constant: -20).isActive = true
     }
     
     func setupButtonsContainerView() {
@@ -411,5 +465,44 @@ class SongInformationView: UIView {
     
     @objc func moreUpperTimeSignatureButtonDidReceiveTouchUpInside() {
         delegate?.moreUpperTimeSignatureButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func playPauseSongButtonDidReceiveTouchUpInside() {
+        delegate?.playPauseSongButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func addCheckpointButtonDidReceiveTouchUpInside() {
+        delegate?.addCheckpointButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func saveButtonDidReceiveTouchUpInside() {
+        delegate?.saveButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func cancelButtonDidReceiveTouchUpInside() {
+        delegate?.cancelButtonDidReceiveTouchUpInside()
+    }
+    
+    @objc func sliderValueChanged() {
+        delegate?.sliderValueChangedToPercentage(timeSlider.value)
+    }
+
+    public func setMetronome(tempo: Int, timeSignatureUpper: Int, timeSignatureLower: Int) {
+        timeSignatureUpperLabel.text = "\(timeSignatureUpper)"
+        timeSignatureLowerLabel.text = "\(timeSignatureLower)"
+        tempoTextField.text = "\(tempo)"
+    }
+    
+    public func play() {
+        playPauseSongButton.setImage(UIImage(named: "pause"), for: .normal)
+    }
+    
+    public func pause() {
+        playPauseSongButton.setImage(UIImage(named: "play"), for: .normal)
+    }
+    
+    public func updatePlayerTime(time: String, percentage: Float) {
+        timeSlider.setValue(percentage, animated: true)
+        currentTimeLabel.text = time
     }
 }

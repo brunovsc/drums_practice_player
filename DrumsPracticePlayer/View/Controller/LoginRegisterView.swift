@@ -254,6 +254,10 @@ class LoginRegisterView: UIView {
         }
     }
     
+    public func resetLayout() {
+//        setupView()
+    }
+    
     // actions
     @objc func loginRegisterSegmentedControlValueChanged() {
         switch loginRegisterSegmentedControl.selectedSegmentIndex {

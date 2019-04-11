@@ -32,6 +32,12 @@ class LoginRegisterViewController: UIViewController {
         animateLoginInterface()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.loginRegisterView.logoTitleContainerView.alpha = 1.0
+        self.loginRegisterView.loginInterfaceContainerView.alpha = 1.0
+    }
+    
     fileprivate func animateLoginInterface() {
         loginRegisterView.animateLoginInterface()
     }
